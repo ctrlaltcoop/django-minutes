@@ -5,3 +5,5 @@ db.sqlite3
 dist
 *.egg-info
 .tox
+.coverage.xml
+.coverage
