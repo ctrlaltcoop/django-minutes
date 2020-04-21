@@ -1,7 +1,7 @@
 name: coverage
 on: [push]
 jobs:
-  tests:
+  coverage:
     runs-on: ubuntu-latest
     strategy:
       matrix:
