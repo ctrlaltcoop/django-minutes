@@ -1,10 +1,12 @@
 from django.contrib.auth.models import User
+from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from minutes.models import MeetingSeries, SubItem, AgendaItem, Decision, Meeting, Participant
-from minutes.permissions import ParticipantReadOnly, OwnerReadWrite
+from minutes.filters import AgendaItemFilterSet
+from minutes.models import MeetingSeries, AgendaMeetingItem, Decision, Meeting, Participant, AgendaSubItem
+from minutes.permissions import ParticipantReadOnly, MeetingOwnerReadWrite
 
 from minutes.serializers import UserSerializer, MeetingSeriesSerializer, MeetingSerializer, DecisionSerializer, \
     SubItemSerializer, AgendaItemSerializer, ParticipantSerializer
@@ -35,7 +37,7 @@ class MeetingSeriesViewSet(viewsets.ModelViewSet):
 
 class MeetingViewSet(viewsets.ModelViewSet):
     permission_classes = [
-        IsAuthenticated & (ParticipantReadOnly | OwnerReadWrite)
+        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite)
     ]
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
@@ -46,18 +48,26 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
 
 class DecisionViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [
+        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite)
+    ]
     queryset = Decision.objects.all()
     serializer_class = DecisionSerializer
 
 
 class AgendaItemViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset = AgendaItem.objects.all()
+    permission_classes = [
+        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite)
+    ]
+    queryset = AgendaMeetingItem.objects.all()
     serializer_class = AgendaItemSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = AgendaItemFilterSet
 
 
 class SubItemViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated]
-    queryset = SubItem.objects.all()
+    permission_classes = [
+        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite)
+    ]
+    queryset = AgendaSubItem.objects.all()
     serializer_class = SubItemSerializer

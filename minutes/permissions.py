@@ -5,19 +5,32 @@ MODIFY_METHODS = ['PATCH', 'PUT']
 DELETE_METHODS = ['DELETE']
 
 
-class UserInOwners(BasePermission):
+class IsModeratedByUser(BasePermission):
     def has_object_permission(self, request, view, obj):
-        return request.user in getattr(obj, 'owners').all()
+        return obj.is_owned_by(request.user)
 
 
-class UserInSeriesOwners(BasePermission):
+class IsOwnedByUser(BasePermission):
     def has_object_permission(self, request, view, obj):
-        return request.user in obj.series.owners.all()
+        return obj.is_owned_by(request.user)
+
+
+class IsSeriesOwnedByUser(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        series = getattr(obj, 'series')
+        if series:
+            return obj.series.is_owned_by(request.user)
+        return False
+
+
+class IsSeriesModeratedByUser(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.series.is_owned_by(request.user)
 
 
 class IsParticipant(BasePermission):
     def has_object_permission(self, request, view, obj):
-        return request.user.id in obj.participants.values_list('user', flat=True)
+        return obj.is_participant(request.user)
 
 
 class Create(BasePermission):
@@ -40,7 +53,7 @@ class DeleteObject(BasePermission):
         return request.method in DELETE_METHODS
 
 
-MeetingOwner = (UserInSeriesOwners | UserInOwners)
+MeetingOwner = (IsSeriesOwnedByUser | IsOwnedByUser)
 
-OwnerReadWrite = (MeetingOwner & ModifyObject) | (MeetingOwner & DeleteObject) | (MeetingOwner & ReadObject)
+MeetingOwnerReadWrite = (MeetingOwner & ModifyObject) | (MeetingOwner & DeleteObject) | (MeetingOwner & ReadObject)
 ParticipantReadOnly = (IsParticipant & ReadObject)
