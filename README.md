@@ -1,3 +1,7 @@
+
+![tests](https://github.com/l0rn/django-minutes/workflows/tests/badge.svg)
+[![codecov](https://codecov.io/gh/l0rn/django-minutes/branch/master/graph/badge.svg)](https://codecov.io/gh/l0rn/django-minutes)
+
 # django-minutes
 
 A meeting minutes application for django.
