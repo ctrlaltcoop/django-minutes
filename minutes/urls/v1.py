@@ -4,17 +4,18 @@ from rest_framework.permissions import AllowAny
 from rest_framework.routers import DefaultRouter
 from rest_framework.schemas import get_schema_view
 
-from minutes.views import MeetingSeriesViewSet, UserViewSet, AgendaItemViewSet, SubItemViewSet, DecisionViewSet, \
-    MeetingViewSet
+from minutes.views import MeetingSeriesViewSet, UserViewSet, AgendaItemViewSet, AgendaSubItemViewSet, DecisionViewSet, \
+    MeetingViewSet, VoteChoiceViewSet
 
 viewset_router = DefaultRouter()
 
 viewset_router.register('users', UserViewSet)
 viewset_router.register('meetingseries', MeetingSeriesViewSet)
 viewset_router.register('meeting', MeetingViewSet)
-viewset_router.register('agendaitem', AgendaItemViewSet)
-viewset_router.register('subitem', SubItemViewSet)
-viewset_router.register('decision', DecisionViewSet)
+viewset_router.register('agendaitem', AgendaItemViewSet, basename='agendaitem')
+viewset_router.register('agendasubitem', AgendaSubItemViewSet, basename='subitem')
+viewset_router.register('decision', DecisionViewSet, basename='decision')
+viewset_router.register('votechoice', VoteChoiceViewSet, basename='votechoice')
 
 
 schema_patterns = [
