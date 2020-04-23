@@ -5,8 +5,8 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from minutes.filters import AgendaItemFilterSet, AgendaSubItemFilterSet, DecisionFilterSet
-from minutes.models import MeetingSeries, AgendaMeetingItem, Decision, Meeting, Participant, AgendaSubItem, MinutesUser, \
-    VoteChoice
+from minutes.models import MeetingSeries, AgendaMeetingItem, Decision, Meeting, Participant,\
+    AgendaSubItem, MinutesUser, VoteChoice
 from minutes.permissions import ParticipantReadOnly, MeetingOwnerReadWrite, Read
 
 from minutes.serializers import UserSerializer, MeetingSeriesSerializer, MeetingSerializer, DecisionSerializer, \
