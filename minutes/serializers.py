@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from minutes.models import Meeting, MeetingSeries, Decision, AgendaMeetingItem, Participant, AgendaSubItem
+from minutes.models import Meeting, MeetingSeries, Decision, AgendaMeetingItem, Participant, AgendaSubItem, VoteChoice
 
 
 class UserSerializer(ModelSerializer):
@@ -52,4 +52,10 @@ class AgendaItemSerializer(ModelSerializer):
 class SubItemSerializer(ModelSerializer):
     class Meta:
         model = AgendaSubItem
+        fields = '__all__'
+
+
+class VoteChoiceSerializer(ModelSerializer):
+    class Meta:
+        model = VoteChoice
         fields = '__all__'

@@ -1,32 +1,61 @@
-from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import CASCADE, PROTECT, SET_NULL
+
+from django.contrib.auth.models import User
+
+
+class MinutesUser(User):
+
+    class Meta:
+        proxy = True
+
+    @classmethod
+    def from_user(cls, user: User):
+        return cls.objects.get(pk=user.pk)
+
+    def my_meetings(self):
+        return self.meetings_owned.all() | \
+               self.meetings_moderated.all() | \
+               Meeting.objects.filter(participants__user_id=self.id)
 
 
 class MeetingItemMixin:
     meeting: 'Meeting'
 
     def is_owned_by(self, user: User) -> bool:
-        return user in self.meeting.owners
+        return user in self.meeting.owners.all()
 
     def is_moderated_by(self, user: User) -> bool:
-        return user in self.meeting.moderators
+        return user in self.meeting.moderators.all()
 
     def is_participant(self, user: User) -> bool:
-        return user in self.meeting.participants
+        return self.meeting.participants.filter(user=user).exists()
 
 
 class AgendaSubItemMixin:
     agenda_item: 'AgendaMeetingItem'
 
     def is_owned_by(self, user: User) -> bool:
-        return user in self.agenda_item.meeting.owners
+        return user in self.agenda_item.meeting.owners.all()
 
     def is_moderated_by(self, user: User) -> bool:
-        return user in self.agenda_item.meeting.moderators
+        return user in self.agenda_item.meeting.moderators.all()
 
     def is_participant(self, user: User) -> bool:
-        return user in self.agenda_item.meeting.participants
+        return self.agenda_item.meeting.participants.filter(user=user).exists()
+
+
+class VoteMixin:
+    decision: 'Decision'
+
+    def is_owned_by(self, user: User) -> bool:
+        return user in self.decision.agenda_item.meeting.owners
+
+    def is_moderated_by(self, user: User) -> bool:
+        return user in self.decision.agenda_item.meeting.moderators
+
+    def is_participant(self, user: User) -> bool:
+        return user in self.decision.agenda_item.meeting.participants
 
 
 class MeetingSeries(models.Model):
@@ -96,19 +125,20 @@ class Decision(models.Model, AgendaSubItemMixin):
 
 class VoteChoice(models.Model):
     name = models.CharField(max_length=40)
-    color_code = models.IntegerField()
+    color_code = models.IntegerField(default=16711680)
 
 
-class Vote(models.Model):
-    amount = models.IntegerField()
+class Vote(models.Model, VoteMixin):
     vote_class = models.ForeignKey(VoteChoice, on_delete=PROTECT, related_name='used_by')
     decision = models.ForeignKey(Decision, on_delete=CASCADE, related_name='votes')
 
-    def is_owned_by(self, user: User) -> bool:
-        return user in self.decision.agenda_item.meeting.owners
+    class Meta:
+        abstract = True
 
-    def is_moderated_by(self, user: User) -> bool:
-        return user in self.decision.agenda_item.meeting.moderators
 
-    def is_participant(self, user: User) -> bool:
-        return user in self.decision.agenda_item.meeting.participants
+class AnonymousVote(Vote):
+    amount = models.IntegerField()
+
+
+class RollCallVote(models.Model):
+    user = models.ForeignKey(User, on_delete=PROTECT, related_name='rollcall_votes')

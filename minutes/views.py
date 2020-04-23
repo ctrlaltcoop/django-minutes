@@ -2,14 +2,15 @@ from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
-from minutes.filters import AgendaItemFilterSet
-from minutes.models import MeetingSeries, AgendaMeetingItem, Decision, Meeting, Participant, AgendaSubItem
-from minutes.permissions import ParticipantReadOnly, MeetingOwnerReadWrite
+from minutes.filters import AgendaItemFilterSet, AgendaSubItemFilterSet, DecisionFilterSet
+from minutes.models import MeetingSeries, AgendaMeetingItem, Decision, Meeting, Participant,\
+    AgendaSubItem, MinutesUser, VoteChoice
+from minutes.permissions import ParticipantReadOnly, MeetingOwnerReadWrite, Read
 
 from minutes.serializers import UserSerializer, MeetingSeriesSerializer, MeetingSerializer, DecisionSerializer, \
-    SubItemSerializer, AgendaItemSerializer, ParticipantSerializer
+    SubItemSerializer, AgendaItemSerializer, ParticipantSerializer, VoteChoiceSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -42,6 +43,12 @@ class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
 
+    def get_queryset(self):
+        my_meetings = self.request.user.meetings_owned.all() | \
+                      self.request.user.meetings_moderated.all() | \
+                      Meeting.objects.filter(participants__user=self.request.user)
+        return my_meetings
+
     def perform_create(self, serializer):
         instance = serializer.save()
         instance.owners.add(self.request.user)
@@ -51,23 +58,53 @@ class DecisionViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite)
     ]
-    queryset = Decision.objects.all()
     serializer_class = DecisionSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = DecisionFilterSet
+
+    def get_queryset(self):
+        user = MinutesUser.from_user(self.request.user)
+        return Decision.objects.filter(
+            agenda_item__meeting__in=user.my_meetings()
+        )
 
 
 class AgendaItemViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite)
     ]
-    queryset = AgendaMeetingItem.objects.all()
+
     serializer_class = AgendaItemSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = AgendaItemFilterSet
 
+    def get_queryset(self):
+        user = MinutesUser.from_user(self.request.user)
+        return AgendaMeetingItem.objects.filter(
+            meeting__in=user.my_meetings()
+        )
 
-class SubItemViewSet(viewsets.ModelViewSet):
+
+class AgendaSubItemViewSet(viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite)
     ]
-    queryset = AgendaSubItem.objects.all()
     serializer_class = SubItemSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = AgendaSubItemFilterSet
+
+    def get_queryset(self):
+        user = MinutesUser.from_user(self.request.user)
+        return AgendaSubItem.objects.filter(
+            agenda_item__meeting__in=user.my_meetings()
+        )
+
+
+class VoteChoiceViewSet(viewsets.ModelViewSet):
+    permission_classes = [
+        (IsAuthenticated & Read) | IsAdminUser
+    ]
+    serializer_class = VoteChoiceSerializer
+
+    def get_queryset(self):
+        return VoteChoice.objects.all()
