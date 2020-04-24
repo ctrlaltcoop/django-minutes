@@ -45,19 +45,6 @@ class AgendaSubItemMixin:
         return self.agenda_item.meeting.participants.filter(user=user).exists()
 
 
-class VoteMixin:
-    decision: 'Decision'
-
-    def is_owned_by(self, user: User) -> bool:
-        return user in self.decision.agenda_item.meeting.owners
-
-    def is_moderated_by(self, user: User) -> bool:
-        return user in self.decision.agenda_item.meeting.moderators
-
-    def is_participant(self, user: User) -> bool:
-        return user in self.decision.agenda_item.meeting.participants
-
-
 class MeetingSeries(models.Model):
     name = models.CharField(max_length=70)
     description = models.TextField(default='')
@@ -128,9 +115,9 @@ class VoteChoice(models.Model):
     color_code = models.IntegerField(default=16711680)
 
 
-class Vote(models.Model, VoteMixin):
-    vote_class = models.ForeignKey(VoteChoice, on_delete=PROTECT, related_name='used_by')
-    decision = models.ForeignKey(Decision, on_delete=CASCADE, related_name='votes')
+class Vote(models.Model):
+    vote_class = models.ForeignKey(VoteChoice, on_delete=PROTECT)
+    decision = models.ForeignKey(Decision, on_delete=CASCADE)
 
     class Meta:
         abstract = True
@@ -139,6 +126,42 @@ class Vote(models.Model, VoteMixin):
 class AnonymousVote(Vote):
     amount = models.IntegerField()
 
+    def is_owned_by(self, user: User) -> bool:
+        return User.objects\
+            .filter(meetings_owned__agendameetingitem__decision__anonymousvote=self)\
+            .filter(id=user.id)\
+            .exists()
 
-class RollCallVote(models.Model):
+    def is_moderated_by(self, user: User) -> bool:
+        return User.objects\
+            .filter(meetings_moderated__agendameetingitem__decision__anonymousvote=self)\
+            .filter(id=user.id)\
+            .exists()
+
+    def is_participant(self, user: User) -> bool:
+        return User.objects\
+            .filter(meeting_participations__meeting__agendameetingitem__decision__anonymousvote=self)\
+            .filter(id=user.id)\
+            .exists()
+
+
+class RollCallVote(Vote):
     user = models.ForeignKey(User, on_delete=PROTECT, related_name='rollcall_votes')
+
+    def is_owned_by(self, user: User) -> bool:
+        return User.objects\
+            .filter(meetings_owned__agendameetingitem__decision__rollcallvote=self)\
+            .filter(id=user.id)\
+            .exists()
+
+    def is_moderated_by(self, user: User) -> bool:
+        return User.objects\
+            .filter(meetings_moderated__agendameetingitem__decision__rollcallvote=self)\
+            .filter(id=user.id)\
+            .exists()
+
+    def is_participant(self, user: User) -> bool:
+        return User.objects\
+            .filter(meeting_participations__meeting__agendameetingitem__decision__rollcallvote=self)\
+            .filter(id=user.id)\
+            .exists()
