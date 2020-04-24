@@ -1,6 +1,6 @@
 from django_filters import FilterSet
 from django_filters.rest_framework import filters
-from minutes.models import AgendaMeetingItem, AgendaSubItem, Decision
+from minutes.models import AgendaMeetingItem, AgendaSubItem, Decision, RollCallVote, AnonymousVote
 
 
 class AgendaItemFilterSet(FilterSet):
@@ -25,3 +25,19 @@ class DecisionFilterSet(FilterSet):
     class Meta:
         model = Decision
         fields = ('agenda_item',)
+
+
+class RollCallVoteFilterSet(FilterSet):
+    decision = filters.NumberFilter(field_name='decision_id', required=False)
+
+    class Meta:
+        model = RollCallVote
+        fields = ('decision',)
+
+
+class AnonymousVoteFilterSet(FilterSet):
+    decision = filters.NumberFilter(field_name='decision_id', required=False)
+
+    class Meta:
+        model = AnonymousVote
+        fields = ('decision',)

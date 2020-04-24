@@ -4,13 +4,15 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
-from minutes.filters import AgendaItemFilterSet, AgendaSubItemFilterSet, DecisionFilterSet
-from minutes.models import MeetingSeries, AgendaMeetingItem, Decision, Meeting, Participant,\
-    AgendaSubItem, MinutesUser, VoteChoice
+from minutes.filters import AgendaItemFilterSet, AgendaSubItemFilterSet, DecisionFilterSet, RollCallVoteFilterSet, \
+    AnonymousVoteFilterSet
+from minutes.models import MeetingSeries, AgendaMeetingItem, Decision, Meeting, Participant, \
+    AgendaSubItem, MinutesUser, VoteChoice, RollCallVote, AnonymousVote
 from minutes.permissions import ParticipantReadOnly, MeetingOwnerReadWrite, Read
 
 from minutes.serializers import UserSerializer, MeetingSeriesSerializer, MeetingSerializer, DecisionSerializer, \
-    SubItemSerializer, AgendaItemSerializer, ParticipantSerializer, VoteChoiceSerializer
+    SubItemSerializer, AgendaItemSerializer, ParticipantSerializer, VoteChoiceSerializer, RollCallVoteSerializer, \
+    AnonymousVoteSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -108,3 +110,33 @@ class VoteChoiceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return VoteChoice.objects.all()
+
+
+class RollCallVoteViewSet(viewsets.ModelViewSet):
+    permission_classes = [
+        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite)
+    ]
+    serializer_class = RollCallVoteSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = RollCallVoteFilterSet
+
+    def get_queryset(self):
+        user = MinutesUser.from_user(self.request.user)
+        return RollCallVote.objects.filter(
+            decision__agenda_item__meeting__in=user.my_meetings()
+        )
+
+
+class AnonymousVoteViewSet(viewsets.ModelViewSet):
+    permission_classes = [
+        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite)
+    ]
+    serializer_class = AnonymousVoteSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = AnonymousVoteFilterSet
+
+    def get_queryset(self):
+        user = MinutesUser.from_user(self.request.user)
+        return AnonymousVote.objects.filter(
+            decision__agenda_item__meeting__in=user.my_meetings()
+        )
