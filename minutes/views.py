@@ -1,8 +1,13 @@
 from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from minutes.filters import AgendaItemFilterSet, AgendaSubItemFilterSet, DecisionFilterSet, RollCallVoteFilterSet, \
     AnonymousVoteFilterSet
@@ -12,13 +17,12 @@ from minutes.permissions import ParticipantReadOnly, MeetingOwnerReadWrite, Read
 
 from minutes.serializers import UserSerializer, MeetingSeriesSerializer, MeetingSerializer, DecisionSerializer, \
     SubItemSerializer, AgendaItemSerializer, ParticipantSerializer, VoteChoiceSerializer, RollCallVoteSerializer, \
-    AnonymousVoteSerializer
+    AnonymousVoteSerializer, PasswordChangeSerializer, TokenSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [
-        IsAuthenticated,
-
+        IsAdminUser
     ]
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -140,3 +144,29 @@ class AnonymousVoteViewSet(viewsets.ModelViewSet):
         return AnonymousVote.objects.filter(
             decision__agenda_item__meeting__in=user.my_meetings()
         )
+
+
+class PasswordChangeViewSet(GenericViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PasswordChangeSerializer
+
+    def create(self, request):
+        serializer: PasswordChangeSerializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if not request.user.check_password(serializer.data['old_password']):
+            raise PermissionDenied('Old password not correct')
+        request.user.set_password(serializer.data['new_password'])
+        request.user.save()
+        return Response({}, status=status.HTTP_204_NO_CONTENT)
+
+
+class TokenViewSet(GenericViewSet):
+    serializer_class = AuthTokenSerializer
+
+    def create(self, request):
+        serializer: AuthTokenSerializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        token, _ = Token.objects.get_or_create(user=User.objects.get(username=serializer.data['username']))
+        token_serializer = TokenSerializer(data={'token': token.key})
+        token_serializer.is_valid()
+        return Response(token_serializer.data, status=status.HTTP_200_OK)

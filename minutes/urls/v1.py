@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.schemas import get_schema_view
 
 from minutes.views import MeetingSeriesViewSet, UserViewSet, AgendaItemViewSet, AgendaSubItemViewSet, DecisionViewSet, \
-    MeetingViewSet, VoteChoiceViewSet, AnonymousVoteViewSet, RollCallVoteViewSet
+    MeetingViewSet, VoteChoiceViewSet, AnonymousVoteViewSet, RollCallVoteViewSet, PasswordChangeViewSet, TokenViewSet
 
 viewset_router = DefaultRouter()
 
@@ -18,6 +18,8 @@ viewset_router.register('decision', DecisionViewSet, basename='decision')
 viewset_router.register('anonymousvote', AnonymousVoteViewSet, basename='anonymousvote')
 viewset_router.register('rollcallvote', RollCallVoteViewSet, basename='rollcallvote')
 viewset_router.register('votechoice', VoteChoiceViewSet, basename='votechoice')
+viewset_router.register('changepassword', PasswordChangeViewSet, basename='passwordchange')
+viewset_router.register('token', TokenViewSet, basename='passwordchange')
 
 
 schema_patterns = [

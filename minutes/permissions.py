@@ -5,6 +5,11 @@ MODIFY_METHODS = ['PATCH', 'PUT']
 DELETE_METHODS = ['DELETE']
 
 
+class MyUser(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj == request.user
+
+
 class IsModeratedByUser(BasePermission):
     def has_object_permission(self, request, view, obj):
         return obj.is_owned_by(request.user)
