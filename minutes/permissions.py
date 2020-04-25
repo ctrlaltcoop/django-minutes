@@ -1,4 +1,3 @@
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 from minutes.models import MinutesUser, AgendaMeetingItem, MeetingSeries
