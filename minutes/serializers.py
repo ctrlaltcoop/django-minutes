@@ -13,23 +13,21 @@ class UserSerializer(ModelSerializer):
 
 
 class MeetingSeriesSerializer(ModelSerializer):
-    moderators = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     owners = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = MeetingSeries
-        fields = ['id', 'name', 'description', 'owners', 'moderators']
+        fields = ['id', 'name', 'description', 'owners']
 
 
 class MeetingSerializer(ModelSerializer):
     participants = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    moderators = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     owners = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
-    series = serializers.PrimaryKeyRelatedField(read_only=True)
+    series = serializers.PrimaryKeyRelatedField(queryset=MeetingSeries.objects.all())
 
     class Meta:
         model = Meeting
-        fields = ['id', 'series', 'name', 'date', 'owners', 'moderators', 'participants']
+        fields = ['id', 'series', 'name', 'date', 'owners', 'participants']
 
 
 class ParticipantSerializer(ModelSerializer):
@@ -45,15 +43,21 @@ class DecisionSerializer(ModelSerializer):
 
 
 class AgendaItemSerializer(ModelSerializer):
+    meeting = serializers.PrimaryKeyRelatedField(queryset=Meeting.objects.all())
+    mentions = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
     class Meta:
         model = AgendaMeetingItem
-        fields = '__all__'
+        fields = ['id', 'meeting', 'name', 'description', 'mentions']
 
 
 class SubItemSerializer(ModelSerializer):
+    agenda_item = serializers.PrimaryKeyRelatedField(queryset=AgendaMeetingItem.objects.all())
+    mentions = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
     class Meta:
         model = AgendaSubItem
-        fields = '__all__'
+        fields = ['id', 'agenda_item', 'name', 'description', 'mentions']
 
 
 class VoteChoiceSerializer(ModelSerializer):

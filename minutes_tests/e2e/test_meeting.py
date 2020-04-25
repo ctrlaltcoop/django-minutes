@@ -1,4 +1,5 @@
 from django.test import LiveServerTestCase
+from django.utils import timezone
 from rest_framework.test import APIClient
 
 from minutes_tests.scenarios.meeting_scenario import MeetingScenario
@@ -17,6 +18,31 @@ class MeetingTest(LiveServerTestCase):
     def test_401_for_unauthenticated_user_on_retrieve(self):
         response = self.client.get('/api/v1/meeting/{0}/'.format(self.scenario.meeting.id))
         self.assertEqual(response.status_code, 401)
+
+    def test_401_for_unauthenticated_user_on_create(self):
+        response = self.client.post('/api/v1/meeting/', {
+            'name': 'Test meeting',
+            'series': self.scenario.test_meeting_series.id
+        })
+        self.assertEqual(response.status_code, 401)
+
+    def test_403_for_creating_a_meeting_on_a_series_i_dont_own(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.series_owner_token.key)
+        response = self.client.post('/api/v1/meeting/', {
+            'name': 'Test meeting',
+            'series': self.scenario.another_test_meeting_series.id,
+            'date': timezone.now()
+        })
+        self.assertEqual(response.status_code, 403)
+
+    def test_200_for_authenticated_on_create(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.series_owner_token.key)
+        response = self.client.post('/api/v1/meeting/', {
+            'name': 'Test meeting',
+            'series': self.scenario.test_meeting_series.id,
+            'date': timezone.now()
+        })
+        self.assertEqual(response.status_code, 201)
 
     def test_200_for_owner_on_list_containing_my_meeting(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.owner_token.key)
