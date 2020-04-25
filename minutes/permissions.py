@@ -1,6 +1,7 @@
+from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
-from minutes.models import MinutesUser, AgendaMeetingItem
+from minutes.models import MinutesUser, AgendaMeetingItem, MeetingSeries
 
 CREATE_METHODS = ['POST']
 MODIFY_METHODS = ['PATCH', 'PUT']
@@ -10,11 +11,6 @@ DELETE_METHODS = ['DELETE']
 class MyUser(BasePermission):
     def has_object_permission(self, request, view, obj):
         return obj == request.user
-
-
-class IsModeratedByUser(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return obj.is_owned_by(request.user)
 
 
 class IsOwnedByUser(BasePermission):
@@ -28,11 +24,6 @@ class IsSeriesOwnedByUser(BasePermission):
         if series:
             return obj.series.is_owned_by(request.user)
         return False
-
-
-class IsSeriesModeratedByUser(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return obj.series.is_owned_by(request.user)
 
 
 class IsParticipant(BasePermission):
@@ -72,6 +63,21 @@ class Delete(BasePermission):
         return request.method in DELETE_METHODS
 
 
+class RelatedMeetingSeriesOwned(BasePermission):
+    def has_permission(self, request, view):
+        series_id = request.data.get('series', None)
+        if not series_id:
+            return False
+        try:
+            series = MeetingSeries.objects.get(pk=series_id)
+            return request.user in series.owners.all()
+        except ObjectDoesNotExist:
+            return False
+
+    def has_object_permission(self, request, view, obj):
+        return False
+
+
 class RelatedMeetingOwned(BasePermission):
     def has_permission(self, request, view):
         meeting_id = request.data.get('meeting', None)
@@ -79,7 +85,7 @@ class RelatedMeetingOwned(BasePermission):
             return False
 
         user = MinutesUser.from_user(request.user)
-        return user.my_meetings().filter(pk=meeting_id).exists()
+        return user.meetings_owned.filter(pk=meeting_id).exists()
 
 
 class RelatedAgendaItemOwned(BasePermission):
@@ -88,7 +94,7 @@ class RelatedAgendaItemOwned(BasePermission):
         if not agendaitem_id:
             return False
         user = MinutesUser.from_user(request.user)
-        return AgendaMeetingItem.objects.filter(meeting__in=user.my_meetings()).filter(pk=agendaitem_id).exists()
+        return AgendaMeetingItem.objects.filter(meeting__in=user.meetings_owned.all()).filter(pk=agendaitem_id).exists()
 
 
 MeetingOwner = (IsSeriesOwnedByUser | IsOwnedByUser)

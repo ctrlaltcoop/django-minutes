@@ -14,7 +14,7 @@ from minutes.filters import AgendaItemFilterSet, AgendaSubItemFilterSet, Decisio
 from minutes.models import MeetingSeries, AgendaMeetingItem, Decision, Meeting, Participant, \
     AgendaSubItem, MinutesUser, VoteChoice, RollCallVote, AnonymousVote
 from minutes.permissions import ParticipantReadOnly, MeetingOwnerReadWrite, Read, Create, \
-    RelatedMeetingOwned, RelatedAgendaItemOwned
+    RelatedMeetingOwned, RelatedAgendaItemOwned, RelatedMeetingSeriesOwned
 
 from minutes.serializers import UserSerializer, MeetingSeriesSerializer, MeetingSerializer, DecisionSerializer, \
     SubItemSerializer, AgendaItemSerializer, ParticipantSerializer, VoteChoiceSerializer, RollCallVoteSerializer, \
@@ -45,16 +45,14 @@ class MeetingSeriesViewSet(viewsets.ModelViewSet):
 
 class MeetingViewSet(viewsets.ModelViewSet):
     permission_classes = [
-        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite)
+        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite | (RelatedMeetingSeriesOwned & Create))
     ]
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
 
     def get_queryset(self):
-        my_meetings = self.request.user.meetings_owned.all() | \
-                      self.request.user.meetings_moderated.all() | \
-                      Meeting.objects.filter(participants__user=self.request.user)
-        return my_meetings
+        user = MinutesUser.from_user(self.request.user)
+        return user.my_meetings()
 
     def perform_create(self, serializer):
         instance = serializer.save()
