@@ -1,8 +1,6 @@
-from django.core.exceptions import ObjectDoesNotExist
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
-from minutes.models import Meeting, MinutesUser, AgendaMeetingItem
+from minutes.models import MinutesUser, AgendaMeetingItem
 
 CREATE_METHODS = ['POST']
 MODIFY_METHODS = ['PATCH', 'PUT']
