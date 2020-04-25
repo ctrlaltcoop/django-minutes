@@ -8,11 +8,6 @@ MODIFY_METHODS = ['PATCH', 'PUT']
 DELETE_METHODS = ['DELETE']
 
 
-class MyUser(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return obj == request.user
-
-
 class IsOwnedByUser(BasePermission):
     def has_object_permission(self, request, view, obj):
         return obj.is_owned_by(request.user)
@@ -71,11 +66,8 @@ class RelatedMeetingSeriesOwned(BasePermission):
         try:
             series = MeetingSeries.objects.get(pk=series_id)
             return request.user in series.owners.all()
-        except ObjectDoesNotExist:
+        except MeetingSeries.DoesNotExist:
             return False
-
-    def has_object_permission(self, request, view, obj):
-        return False
 
 
 class RelatedMeetingOwned(BasePermission):
