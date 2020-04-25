@@ -45,15 +45,21 @@ class DecisionSerializer(ModelSerializer):
 
 
 class AgendaItemSerializer(ModelSerializer):
+    meeting = serializers.PrimaryKeyRelatedField(queryset=Meeting.objects.all())
+    mentions = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
     class Meta:
         model = AgendaMeetingItem
-        fields = '__all__'
+        fields = ['id', 'meeting', 'name', 'description', 'mentions']
 
 
 class SubItemSerializer(ModelSerializer):
+    agenda_item = serializers.PrimaryKeyRelatedField(queryset=AgendaMeetingItem.objects.all())
+    mentions = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
     class Meta:
         model = AgendaSubItem
-        fields = '__all__'
+        fields = ['id', 'agenda_item', 'name', 'description', 'mentions']
 
 
 class VoteChoiceSerializer(ModelSerializer):

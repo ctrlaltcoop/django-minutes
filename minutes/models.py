@@ -1,3 +1,6 @@
+import re
+from typing import List
+
 from django.db import models
 from django.db.models import CASCADE, PROTECT, SET_NULL
 
@@ -5,7 +8,6 @@ from django.contrib.auth.models import User
 
 
 class MinutesUser(User):
-
     class Meta:
         proxy = True
 
@@ -43,6 +45,15 @@ class AgendaSubItemMixin:
 
     def is_participant(self, user: User) -> bool:
         return self.agenda_item.meeting.participants.filter(user=user).exists()
+
+
+class MentionMixin:
+    description: str
+    mention_regex = r'\s[@]([\w_-]+)'
+
+    def update_mentions(self):
+        mentioned_usernames = re.findall(self.mention_regex, self.description)
+        self.mentions.set(User.objects.filter(username__in=mentioned_usernames))
 
 
 class MeetingSeries(models.Model):
@@ -91,17 +102,26 @@ class Participant(models.Model):
     attended = models.BooleanField(default=False)
 
 
-class AgendaMeetingItem(models.Model, MeetingItemMixin):
+class AgendaMeetingItem(models.Model, MeetingItemMixin, MentionMixin):
     meeting = models.ForeignKey(Meeting, on_delete=CASCADE)
     name = models.CharField(max_length=70)
     description = models.TextField()
+    mentions = models.ManyToManyField(User)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.update_mentions()
 
 
-class AgendaSubItem(models.Model, AgendaSubItemMixin):
+class AgendaSubItem(models.Model, AgendaSubItemMixin, MentionMixin):
     agenda_item = models.ForeignKey(AgendaMeetingItem, on_delete=CASCADE)
     name = models.CharField(max_length=70)
     description = models.TextField()
-    order_with_respect_to = Meeting
+    mentions = models.ManyToManyField(User)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.update_mentions()
 
 
 class Decision(models.Model, AgendaSubItemMixin):
@@ -127,21 +147,21 @@ class AnonymousVote(Vote):
     amount = models.IntegerField()
 
     def is_owned_by(self, user: User) -> bool:
-        return User.objects\
-            .filter(meetings_owned__agendameetingitem__decision__anonymousvote=self)\
-            .filter(id=user.id)\
+        return User.objects \
+            .filter(meetings_owned__agendameetingitem__decision__anonymousvote=self) \
+            .filter(id=user.id) \
             .exists()
 
     def is_moderated_by(self, user: User) -> bool:
-        return User.objects\
-            .filter(meetings_moderated__agendameetingitem__decision__anonymousvote=self)\
-            .filter(id=user.id)\
+        return User.objects \
+            .filter(meetings_moderated__agendameetingitem__decision__anonymousvote=self) \
+            .filter(id=user.id) \
             .exists()
 
     def is_participant(self, user: User) -> bool:
-        return User.objects\
-            .filter(meeting_participations__meeting__agendameetingitem__decision__anonymousvote=self)\
-            .filter(id=user.id)\
+        return User.objects \
+            .filter(meeting_participations__meeting__agendameetingitem__decision__anonymousvote=self) \
+            .filter(id=user.id) \
             .exists()
 
 
@@ -149,19 +169,19 @@ class RollCallVote(Vote):
     user = models.ForeignKey(User, on_delete=PROTECT, related_name='rollcall_votes')
 
     def is_owned_by(self, user: User) -> bool:
-        return User.objects\
-            .filter(meetings_owned__agendameetingitem__decision__rollcallvote=self)\
-            .filter(id=user.id)\
+        return User.objects \
+            .filter(meetings_owned__agendameetingitem__decision__rollcallvote=self) \
+            .filter(id=user.id) \
             .exists()
 
     def is_moderated_by(self, user: User) -> bool:
-        return User.objects\
-            .filter(meetings_moderated__agendameetingitem__decision__rollcallvote=self)\
-            .filter(id=user.id)\
+        return User.objects \
+            .filter(meetings_moderated__agendameetingitem__decision__rollcallvote=self) \
+            .filter(id=user.id) \
             .exists()
 
     def is_participant(self, user: User) -> bool:
-        return User.objects\
-            .filter(meeting_participations__meeting__agendameetingitem__decision__rollcallvote=self)\
-            .filter(id=user.id)\
+        return User.objects \
+            .filter(meeting_participations__meeting__agendameetingitem__decision__rollcallvote=self) \
+            .filter(id=user.id) \
             .exists()

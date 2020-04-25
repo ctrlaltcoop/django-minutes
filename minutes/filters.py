@@ -5,10 +5,11 @@ from minutes.models import AgendaMeetingItem, AgendaSubItem, Decision, RollCallV
 
 class AgendaItemFilterSet(FilterSet):
     meeting = filters.NumberFilter(field_name='meeting_id', required=False)
+    mentions = filters.NumberFilter(field_name='mentions', required=False)
 
     class Meta:
         model = AgendaMeetingItem
-        fields = ('meeting',)
+        fields = ('meeting', 'mentions')
 
 
 class AgendaSubItemFilterSet(FilterSet):

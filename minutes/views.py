@@ -13,7 +13,8 @@ from minutes.filters import AgendaItemFilterSet, AgendaSubItemFilterSet, Decisio
     AnonymousVoteFilterSet
 from minutes.models import MeetingSeries, AgendaMeetingItem, Decision, Meeting, Participant, \
     AgendaSubItem, MinutesUser, VoteChoice, RollCallVote, AnonymousVote
-from minutes.permissions import ParticipantReadOnly, MeetingOwnerReadWrite, Read
+from minutes.permissions import ParticipantReadOnly, MeetingOwnerReadWrite, Read, Create, \
+    RelatedMeetingOwned, RelatedAgendaItemOwned
 
 from minutes.serializers import UserSerializer, MeetingSeriesSerializer, MeetingSerializer, DecisionSerializer, \
     SubItemSerializer, AgendaItemSerializer, ParticipantSerializer, VoteChoiceSerializer, RollCallVoteSerializer, \
@@ -77,7 +78,7 @@ class DecisionViewSet(viewsets.ModelViewSet):
 
 class AgendaItemViewSet(viewsets.ModelViewSet):
     permission_classes = [
-        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite)
+        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite | (Create & RelatedMeetingOwned))
     ]
 
     serializer_class = AgendaItemSerializer
@@ -93,7 +94,7 @@ class AgendaItemViewSet(viewsets.ModelViewSet):
 
 class AgendaSubItemViewSet(viewsets.ModelViewSet):
     permission_classes = [
-        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite)
+        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite | (Create & RelatedAgendaItemOwned))
     ]
     serializer_class = SubItemSerializer
     filter_backends = [DjangoFilterBackend]

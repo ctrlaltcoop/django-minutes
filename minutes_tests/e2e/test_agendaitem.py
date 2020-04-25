@@ -94,3 +94,63 @@ class AgendaItemTest(LiveServerTestCase):
         self.scenario.agenda_item.delete()
         response = self.client.get('/api/v1/agendaitem/{0}/'.format(self.scenario.agenda_item.id))
         self.assertEqual(response.status_code, 404)
+
+    def test_401_for_creating_for_unauthenticated_user(self):
+        response = self.client.post(
+            '/api/v1/agendaitem/',
+            {
+                'meeting': self.scenario.meeting.id,
+                'name': 'Testitem',
+                'description': 'some text'
+            }
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_403_for_creating_on_meeting_i_dont_own(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.nobody_token.key)
+        response = self.client.post(
+            '/api/v1/agendaitem/',
+            {
+                'meeting': self.scenario.meeting.id,
+                'name': 'Testitem',
+                'description': 'some text'
+            }
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_200_for_creating_on_meeting_i_do_own(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.owner_token.key)
+        response = self.client.post(
+            '/api/v1/agendaitem/',
+            {
+                'meeting': self.scenario.meeting.id,
+                'name': 'Testitem',
+                'description': 'some text'
+            }
+        )
+        self.assertEqual(response.status_code, 201)
+
+    def test_verify_mentions_updated(self):
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.owner_token.key)
+        response = self.client.post(
+            '/api/v1/agendaitem/',
+            {
+                'meeting': self.scenario.meeting.id,
+                'name': 'Testitem',
+                'description': 'test with a mention of @{0} and @{1}'.format(
+                    self.scenario.owner.username,
+                    self.scenario.nobody.username
+                )
+            }
+        )
+        new_agendaitem_id = response.json()['id']
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual([self.scenario.owner.id, self.scenario.nobody.id], response.json()['mentions'])
+        response = self.client.get('/api/v1/agendaitem/', {'mentions': [self.scenario.owner.id]})
+        agendaitem_ids = [i['id'] for i in response.json()]
+        self.assertIn(new_agendaitem_id, agendaitem_ids)
+        new_agendaitem = next((i for i in response.json() if i['id'] == new_agendaitem_id), None)
+        self.assertEqual(
+            [self.scenario.owner.id, self.scenario.nobody.id],
+            new_agendaitem['mentions']
+        )
