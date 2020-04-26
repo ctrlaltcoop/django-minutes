@@ -1,0 +1,10 @@
+Hello {{ invited_user.username }},
+
+You got an invitation to collaborate on meeting minutes from {{ inviting_user.username }}.
+To follow that invitation click on the following link and claim your account:
+
+{{ invitation_url }}
+
+Best regards,
+
+{{ instance_name }}
