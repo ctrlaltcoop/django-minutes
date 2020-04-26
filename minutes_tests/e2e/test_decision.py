@@ -20,7 +20,7 @@ class DecisionTest(LiveServerTestCase):
     def test_200_for_owner_on_list_containing_my_meeting(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.owner_token.key)
         response = self.client.get('/api/v1/decision/')
-        decision_ids = [i['id'] for i in response.json()]
+        decision_ids = [i['id'] for i in response.json()['results']]
         self.assertIn(self.scenario.decision.id, decision_ids)
         self.assertNotIn(self.scenario.another_decision.id, decision_ids)
         self.assertEqual(response.status_code, 200)
@@ -33,7 +33,7 @@ class DecisionTest(LiveServerTestCase):
     def test_200_for_filtering_by_meeting_and_contains_only_requested(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.participant_token.key)
         response = self.client.get('/api/v1/decision/', {'agenda_item': self.scenario.agenda_item.id})
-        decision_ids = [i['id'] for i in response.json()]
+        decision_ids = [i['id'] for i in response.json()['results']]
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.scenario.decision.id, decision_ids)
         self.assertNotIn(self.scenario.another_decision.id, decision_ids)
@@ -41,7 +41,7 @@ class DecisionTest(LiveServerTestCase):
     def test_200_for_filtering_by_meeting_2_and_contains_only_requested(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.participant_token.key)
         response = self.client.get('/api/v1/decision/', {'agenda_item': self.scenario.meeting_2_agenda_item.id})
-        decision_ids = [i['id'] for i in response.json()]
+        decision_ids = [i['id'] for i in response.json()['results']]
         self.assertEqual(response.status_code, 200)
         self.assertNotIn(self.scenario.decision.id, decision_ids)
         self.assertIn(self.scenario.meeting_2_agenda_item_decision.id, decision_ids)
@@ -49,7 +49,7 @@ class DecisionTest(LiveServerTestCase):
     def test_200_for_listing_agenda_items_and_contains_all_agenda_items(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.participant_token.key)
         response = self.client.get('/api/v1/decision/')
-        decision_ids = [i['id'] for i in response.json()]
+        decision_ids = [i['id'] for i in response.json()['results']]
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.scenario.decision.id, decision_ids)
         self.assertIn(self.scenario.meeting_2_agenda_item_decision.id, decision_ids)

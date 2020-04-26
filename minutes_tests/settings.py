@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ordered_model',
     'rest_framework',
-    'rest_framework.authtoken',
-    'minutes'
+    'minutes',
+    'minutes.auth'
 ]
 
 MIDDLEWARE = [
@@ -121,9 +121,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 100,
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+        'minutes.auth.authentication.TokenAuthentication',
     ]
 }

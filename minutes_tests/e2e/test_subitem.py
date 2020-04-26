@@ -20,7 +20,7 @@ class AgendaSubItemTest(LiveServerTestCase):
     def test_200_for_owner_on_list_containing_my_meeting(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.owner_token.key)
         response = self.client.get('/api/v1/agendasubitem/')
-        subitem_ids = [i['id'] for i in response.json()]
+        subitem_ids = [i['id'] for i in response.json()['results']]
         self.assertIn(self.scenario.subitem.id, subitem_ids)
         self.assertNotIn(self.scenario.another_subitem.id, subitem_ids)
         self.assertEqual(response.status_code, 200)
@@ -33,7 +33,7 @@ class AgendaSubItemTest(LiveServerTestCase):
     def test_200_for_filtering_by_meeting_and_contains_only_requested(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.participant_token.key)
         response = self.client.get('/api/v1/agendasubitem/', {'agenda_item': self.scenario.agenda_item.id})
-        subitem_ids = [i['id'] for i in response.json()]
+        subitem_ids = [i['id'] for i in response.json()['results']]
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.scenario.subitem.id, subitem_ids)
         self.assertNotIn(self.scenario.another_subitem.id, subitem_ids)
@@ -41,7 +41,7 @@ class AgendaSubItemTest(LiveServerTestCase):
     def test_200_for_filtering_by_meeting_2_and_contains_only_requested(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.participant_token.key)
         response = self.client.get('/api/v1/agendasubitem/', {'agenda_item': self.scenario.meeting_2_agenda_item.id})
-        agendaitem_ids = [i['id'] for i in response.json()]
+        agendaitem_ids = [i['id'] for i in response.json()['results']]
         self.assertEqual(response.status_code, 200)
         self.assertNotIn(self.scenario.subitem.id, agendaitem_ids)
         self.assertIn(self.scenario.meeting_2_agenda_item_subitem.id, agendaitem_ids)
@@ -49,7 +49,7 @@ class AgendaSubItemTest(LiveServerTestCase):
     def test_200_for_listing_agenda_items_and_contains_all_agenda_items(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.participant_token.key)
         response = self.client.get('/api/v1/agendasubitem/')
-        agendaitem_ids = [i['id'] for i in response.json()]
+        agendaitem_ids = [i['id'] for i in response.json()['results']]
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.scenario.subitem.id, agendaitem_ids)
         self.assertIn(self.scenario.meeting_2_agenda_item_subitem.id, agendaitem_ids)
@@ -133,9 +133,9 @@ class AgendaSubItemTest(LiveServerTestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual([self.scenario.owner.id, self.scenario.nobody.id], response.json()['mentions'])
         response = self.client.get('/api/v1/agendasubitem/', {'mentions': [self.scenario.owner.id]})
-        agendaitem_ids = [i['id'] for i in response.json()]
+        agendaitem_ids = [i['id'] for i in response.json()['results']]
         self.assertIn(new_agendasubitem_id, agendaitem_ids)
-        new_agendaitem = next((i for i in response.json() if i['id'] == new_agendasubitem_id), None)
+        new_agendaitem = next((i for i in response.json()['results'] if i['id'] == new_agendasubitem_id), None)
         self.assertEqual(
             [self.scenario.owner.id, self.scenario.nobody.id],
             new_agendaitem['mentions']

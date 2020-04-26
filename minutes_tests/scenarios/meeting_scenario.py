@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.utils import timezone
-from rest_framework.authtoken.models import Token
+from minutes.auth.models import Token, TokenTypes
 
 from minutes.models import Meeting, MeetingSeries
 
@@ -12,10 +12,10 @@ class MeetingScenario:
         self.participant = User.objects.create(username="participant")
         self.nobody = User.objects.create(username="nobody")
 
-        self.series_owner_token = Token.objects.create(user=self.series_owner)
-        self.owner_token = Token.objects.create(user=self.owner)
-        self.participant_token = Token.objects.create(user=self.participant)
-        self.nobody_token = Token.objects.create(user=self.nobody)
+        self.series_owner_token = Token.objects.create(user=self.series_owner, token_type=TokenTypes.AUTH)
+        self.owner_token = Token.objects.create(user=self.owner, token_type=TokenTypes.AUTH)
+        self.participant_token = Token.objects.create(user=self.participant, token_type=TokenTypes.AUTH)
+        self.nobody_token = Token.objects.create(user=self.nobody, token_type=TokenTypes.AUTH)
 
         self.test_meeting_series = MeetingSeries.objects.create(name="Test Series")
         self.test_meeting_series.owners.add(self.series_owner)

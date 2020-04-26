@@ -1,11 +1,14 @@
+from django.conf import settings
 from django.urls import path, include
 from django.views.generic import TemplateView
 from rest_framework.permissions import AllowAny
 from rest_framework.routers import DefaultRouter
 from rest_framework.schemas import get_schema_view
 
+from minutes.auth.apps import MinutesAuthConfig
+from minutes.auth.views import PasswordChangeViewSet, TokenViewSet, TokenRefreshViewSet
 from minutes.views import MeetingSeriesViewSet, UserViewSet, AgendaItemViewSet, AgendaSubItemViewSet, DecisionViewSet, \
-    MeetingViewSet, VoteChoiceViewSet, AnonymousVoteViewSet, RollCallVoteViewSet, PasswordChangeViewSet, TokenViewSet
+    MeetingViewSet, VoteChoiceViewSet, AnonymousVoteViewSet, RollCallVoteViewSet
 
 viewset_router = DefaultRouter()
 
@@ -18,8 +21,11 @@ viewset_router.register('decision', DecisionViewSet, basename='decision')
 viewset_router.register('anonymousvote', AnonymousVoteViewSet, basename='anonymousvote')
 viewset_router.register('rollcallvote', RollCallVoteViewSet, basename='rollcallvote')
 viewset_router.register('votechoice', VoteChoiceViewSet, basename='votechoice')
-viewset_router.register('changepassword', PasswordChangeViewSet, basename='passwordchange')
-viewset_router.register('token', TokenViewSet, basename='passwordchange')
+
+if MinutesAuthConfig.name in settings.INSTALLED_APPS:
+    viewset_router.register('changepassword', PasswordChangeViewSet, basename='passwordchange')
+    viewset_router.register('token', TokenViewSet, basename='token')
+    viewset_router.register('token-refresh', TokenRefreshViewSet, basename='tokenrefresh')
 
 
 schema_patterns = [

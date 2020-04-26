@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.test import LiveServerTestCase
-from rest_framework.authtoken.models import Token
+from minutes.auth.models import Token, TokenTypes
 from rest_framework.test import APIClient
 
 
@@ -8,7 +8,7 @@ class VoteChoiceTest(LiveServerTestCase):
     def setUp(self) -> None:
         self.client = APIClient()
         self.admin = User.objects.create(username='admin', is_staff=True)
-        self.admin_token = Token.objects.create(user=self.admin)
+        self.admin_token = Token.objects.create(user=self.admin, token_type=TokenTypes.AUTH)
 
     def test_401_for_creating_unauthenticated(self):
         response = self.client.get('/api/v1/users/')

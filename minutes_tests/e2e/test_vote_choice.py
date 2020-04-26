@@ -17,7 +17,7 @@ class VoteChoiceTest(LiveServerTestCase):
     def test_200_for_authenticated_user_on_list_with_all_items(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.user_token.key)
         response = self.client.get('/api/v1/votechoice/')
-        votechoice_ids = [i['id'] for i in response.json()]
+        votechoice_ids = [i['id'] for i in response.json()['results']]
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.scenario.vote_choice_1.id, votechoice_ids)
         self.assertIn(self.scenario.vote_choice_2.id, votechoice_ids)

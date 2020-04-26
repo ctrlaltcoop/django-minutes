@@ -20,7 +20,7 @@ class RollCallVoteTest(LiveServerTestCase):
     def test_200_for_owner_on_list_containing_my_meeting(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.owner_token.key)
         response = self.client.get('/api/v1/rollcallvote/')
-        vote_ids = [i['id'] for i in response.json()]
+        vote_ids = [i['id'] for i in response.json()['results']]
         self.assertIn(self.scenario.rollcall_vote.id, vote_ids)
         self.assertNotIn(self.scenario.another_rollcall_vote.id, vote_ids)
         self.assertEqual(response.status_code, 200)
@@ -33,7 +33,7 @@ class RollCallVoteTest(LiveServerTestCase):
     def test_200_for_filtering_by_meeting_and_contains_only_requested(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.participant_token.key)
         response = self.client.get('/api/v1/rollcallvote/', {'decision': self.scenario.decision.id})
-        vote_ids = [i['id'] for i in response.json()]
+        vote_ids = [i['id'] for i in response.json()['results']]
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.scenario.rollcall_vote.id, vote_ids)
         self.assertNotIn(self.scenario.another_rollcall_vote.id, vote_ids)
@@ -44,7 +44,7 @@ class RollCallVoteTest(LiveServerTestCase):
             '/api/v1/rollcallvote/',
             {'decision': self.scenario.meeting_2_agenda_item_decision.id}
         )
-        vote_ids = [i['id'] for i in response.json()]
+        vote_ids = [i['id'] for i in response.json()['results']]
         self.assertEqual(response.status_code, 200)
         self.assertNotIn(self.scenario.rollcall_vote.id, vote_ids)
         self.assertIn(self.scenario.meeting_2_rollcallvote.id, vote_ids)
@@ -52,7 +52,7 @@ class RollCallVoteTest(LiveServerTestCase):
     def test_200_for_listing_agenda_items_and_contains_all_agenda_items(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.participant_token.key)
         response = self.client.get('/api/v1/rollcallvote/')
-        vote_ids = [i['id'] for i in response.json()]
+        vote_ids = [i['id'] for i in response.json()['results']]
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.scenario.rollcall_vote.id, vote_ids)
         self.assertIn(self.scenario.meeting_2_rollcallvote.id, vote_ids)
