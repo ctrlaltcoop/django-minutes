@@ -47,7 +47,7 @@ class MeetingTest(LiveServerTestCase):
     def test_200_for_owner_on_list_containing_my_meeting(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.owner_token.key)
         response = self.client.get('/api/v1/meeting/')
-        meeting_ids = [i['id'] for i in response.json()]
+        meeting_ids = [i['id'] for i in response.json()['results']]
         self.assertIn(self.scenario.meeting.id, meeting_ids)
         self.assertNotIn(self.scenario.another_meeting.id, meeting_ids)
         self.assertEqual(response.status_code, 200)

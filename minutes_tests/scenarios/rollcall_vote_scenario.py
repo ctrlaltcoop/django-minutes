@@ -1,5 +1,4 @@
-from minutes.models import Decision, AnonymousVote, VoteChoice, RollCallVote
-from minutes_tests.scenarios.agendaitem_scenario import AgendaItemScenario
+from minutes.models import VoteChoice, RollCallVote
 from minutes_tests.scenarios.decision_scenario import DecisionScenario
 
 

@@ -98,12 +98,3 @@ class AnonymousVoteSerializer(ModelSerializer):
     class Meta:
         model = AnonymousVote
         fields = '__all__'
-
-
-class PasswordChangeSerializer(Serializer):  # pylint: disable=W0223
-    old_password = serializers.CharField()
-    new_password = serializers.CharField()
-
-
-class TokenSerializer(Serializer):  # pylint: disable=W0223
-    token = serializers.CharField()

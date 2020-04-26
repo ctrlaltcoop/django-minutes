@@ -21,7 +21,7 @@ class AgendaItemTest(LiveServerTestCase):
     def test_200_for_owner_on_list_containing_my_meeting(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.owner_token.key)
         response = self.client.get('/api/v1/agendaitem/')
-        agendaitem_ids = [i['id'] for i in response.json()]
+        agendaitem_ids = [i['id'] for i in response.json()['results']]
         self.assertIn(self.scenario.agenda_item.id, agendaitem_ids)
         self.assertNotIn(self.scenario.another_agenda_item.id, agendaitem_ids)
         self.assertEqual(response.status_code, 200)
@@ -29,14 +29,14 @@ class AgendaItemTest(LiveServerTestCase):
     def test_200_for_authenticated_nobody_on_list_but_empty(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.nobody_token.key)
         response = self.client.get('/api/v1/agendaitem/')
-        agendaitem_ids = [i['id'] for i in response.json()]
+        agendaitem_ids = [i['id'] for i in response.json()['results']]
         self.assertEqual([self.scenario.another_agenda_item.id], agendaitem_ids)
         self.assertEqual(response.status_code, 200)
 
     def test_200_for_filtering_by_meeting_and_contains_only_requested(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.participant_token.key)
         response = self.client.get('/api/v1/agendaitem/', {'meeting': self.scenario.meeting.id})
-        agendaitem_ids = [i['id'] for i in response.json()]
+        agendaitem_ids = [i['id'] for i in response.json()['results']]
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.scenario.agenda_item.id, agendaitem_ids)
         self.assertNotIn(self.scenario.meeting_2_agenda_item.id, agendaitem_ids)
@@ -44,7 +44,7 @@ class AgendaItemTest(LiveServerTestCase):
     def test_200_for_filtering_by_meeting_2_and_contains_only_requested(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.participant_token.key)
         response = self.client.get('/api/v1/agendaitem/', {'meeting': self.scenario.meeting_2.id})
-        agendaitem_ids = [i['id'] for i in response.json()]
+        agendaitem_ids = [i['id'] for i in response.json()['results']]
         self.assertEqual(response.status_code, 200)
         self.assertNotIn(self.scenario.agenda_item.id, agendaitem_ids)
         self.assertIn(self.scenario.meeting_2_agenda_item.id, agendaitem_ids)
@@ -52,7 +52,7 @@ class AgendaItemTest(LiveServerTestCase):
     def test_200_for_listing_agenda_items_and_contains_all_agenda_items(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.scenario.participant_token.key)
         response = self.client.get('/api/v1/agendaitem/')
-        agendaitem_ids = [i['id'] for i in response.json()]
+        agendaitem_ids = [i['id'] for i in response.json()['results']]
         self.assertEqual(response.status_code, 200)
         self.assertIn(self.scenario.agenda_item.id, agendaitem_ids)
         self.assertIn(self.scenario.meeting_2_agenda_item.id, agendaitem_ids)
@@ -147,9 +147,9 @@ class AgendaItemTest(LiveServerTestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual([self.scenario.owner.id, self.scenario.nobody.id], response.json()['mentions'])
         response = self.client.get('/api/v1/agendaitem/', {'mentions': [self.scenario.owner.id]})
-        agendaitem_ids = [i['id'] for i in response.json()]
+        agendaitem_ids = [i['id'] for i in response.json()['results']]
         self.assertIn(new_agendaitem_id, agendaitem_ids)
-        new_agendaitem = next((i for i in response.json() if i['id'] == new_agendaitem_id), None)
+        new_agendaitem = next((i for i in response.json()['results'] if i['id'] == new_agendaitem_id), None)
         self.assertEqual(
             [self.scenario.owner.id, self.scenario.nobody.id],
             new_agendaitem['mentions']
