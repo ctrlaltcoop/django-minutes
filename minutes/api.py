@@ -5,7 +5,7 @@ from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
-from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_201_CREATED
+from rest_framework.status import HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet
 
 from minutes.filters import AgendaItemFilterSet, AgendaSubItemFilterSet, DecisionFilterSet, RollCallVoteFilterSet, \

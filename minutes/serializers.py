@@ -3,7 +3,7 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, Serializer
 
 from minutes.models import Meeting, MeetingSeries, Decision, AgendaMeetingItem, Participant, AgendaSubItem, \
-    VoteChoice, AnonymousVote, RollCallVote, Invitation
+    VoteChoice, AnonymousVote, RollCallVote
 
 
 class UserSerializer(ModelSerializer):
@@ -100,6 +100,6 @@ class AnonymousVoteSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class InvitationRequestSerializer(Serializer):
+class InvitationRequestSerializer(Serializer):  # pylint: disable=W0223
     username = serializers.CharField()
     email = serializers.EmailField()
