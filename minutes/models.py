@@ -4,10 +4,7 @@ from django.db import models
 from django.db.models import CASCADE, PROTECT, SET_NULL
 
 from django.contrib.auth.models import User
-from django.template.loader import render_to_string
-from django.utils.translation import gettext as _
 
-from minutes.apps import MinutesConfig
 
 class MinutesUser(User):
     class Meta:
@@ -160,18 +157,3 @@ class RollCallVote(Vote):
             .filter(meeting_participations__meeting__agendameetingitem__decision__rollcallvote=self) \
             .filter(id=user.id) \
             .exists()
-
-
-class Invitation(models.Model):
-    inviting_user = models.ForeignKey(User, on_delete=CASCADE, related_name='invites_sent')
-    invited_user = models.ForeignKey(User, on_delete=CASCADE, related_name='invites')
-
-    def save(self, **kwargs):
-        super().save(**kwargs)
-        invite_mail = render_to_string('minutes/mails/invitation.txt', {
-            'invited_user': self.invited_user,
-            'inviting_user': self.inviting_user,
-            'instance_name': MinutesConfig.MINUTES_INSTANCE_NAME,
-            'invitation_url': 'tbd'  # TODO: Fill once FE urls can be resolved
-        })
-        self.invited_user.email_user(_('You were invited to collaborate on meeting minutes'), invite_mail)

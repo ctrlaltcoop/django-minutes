@@ -1,4 +1,5 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.permissions import IsAdminUser as IsAdminUserBase
 
 from minutes.models import MinutesUser, AgendaMeetingItem, MeetingSeries
 
@@ -88,6 +89,21 @@ class RelatedAgendaItemOwned(BasePermission):
         return AgendaMeetingItem.objects.filter(meeting__in=user.meetings_owned.all()).filter(pk=agendaitem_id).exists()
 
 
+class OwnUser(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj == request.user
+
+
+class IsAdminUser(IsAdminUserBase):
+    """
+    A custom IsAdminUser class which also checks being admin user on object permissions
+    With the base class returning always True for has_object_permission it'll cause trouble
+    if you want to use it with & on other object permissions.
+    """
+    def has_object_permission(self, request, view, obj):
+        return self.has_permission(request, view)
+
+
 MeetingOwner = (IsSeriesOwnedByUser | IsOwnedByUser)
 
 MeetingOwnerReadWrite = (MeetingOwner & Modify) |\
@@ -95,3 +111,5 @@ MeetingOwnerReadWrite = (MeetingOwner & Modify) |\
                         (MeetingOwner & Read)
 
 ParticipantReadOnly = (IsParticipant & Read)
+
+ReadWriteOwnUser = ((OwnUser & Read) | (OwnUser & Modify)) & ~Create

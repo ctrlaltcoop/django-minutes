@@ -2,27 +2,23 @@ from django.contrib.auth.models import User
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets
-from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.permissions import IsAuthenticated
 
 from minutes.filters import AgendaItemFilterSet, AgendaSubItemFilterSet, DecisionFilterSet, RollCallVoteFilterSet, \
     AnonymousVoteFilterSet
 from minutes.models import MeetingSeries, AgendaMeetingItem, Decision, Meeting, Participant, \
-    AgendaSubItem, MinutesUser, VoteChoice, RollCallVote, AnonymousVote, Invitation
+    AgendaSubItem, MinutesUser, VoteChoice, RollCallVote, AnonymousVote
 from minutes.permissions import ParticipantReadOnly, MeetingOwnerReadWrite, Read, Create, \
-    RelatedMeetingOwned, RelatedAgendaItemOwned, RelatedMeetingSeriesOwned
+    RelatedMeetingOwned, RelatedAgendaItemOwned, RelatedMeetingSeriesOwned, ReadWriteOwnUser, IsAdminUser
 
 from minutes.serializers import UserSerializer, MeetingSeriesSerializer, MeetingSerializer, DecisionSerializer, \
     SubItemSerializer, AgendaItemSerializer, ParticipantSerializer, VoteChoiceSerializer, RollCallVoteSerializer, \
-    AnonymousVoteSerializer, InvitationRequestSerializer
+    AnonymousVoteSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [
-        IsAdminUser
+        IsAdminUser | (IsAuthenticated & ReadWriteOwnUser)
     ]
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -142,28 +138,3 @@ class AnonymousVoteViewSet(viewsets.ModelViewSet):
         return AnonymousVote.objects.filter(
             decision__agenda_item__meeting__in=user.my_meetings()
         )
-
-
-class InvitationViewSet(GenericViewSet):
-    permission_classes = [
-        IsAuthenticated
-    ]
-    serializer_class = InvitationRequestSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_class = AnonymousVoteFilterSet
-
-    def create(self, request):
-        invitation_request = InvitationRequestSerializer(data=request.data)
-        invitation_request.is_valid(raise_exception=True)
-        if User.objects.filter(email=invitation_request.data['email']).exists():
-            raise ValidationError('A user with this email address already exists')
-        new_user = User.objects.create(
-            username=invitation_request.data['username'],
-            email=invitation_request.data['email']
-        )
-        Invitation.objects.create(
-            invited_user=new_user,
-            inviting_user=request.user,
-        )
-        user_serializer = UserSerializer(instance=new_user)
-        return Response(user_serializer.data, status=HTTP_201_CREATED)
