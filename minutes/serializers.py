@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, Serializer
 
 from minutes.models import Meeting, MeetingSeries, Decision, AgendaMeetingItem, Participant, AgendaSubItem, \
     VoteChoice, AnonymousVote, RollCallVote
@@ -98,3 +98,8 @@ class AnonymousVoteSerializer(ModelSerializer):
     class Meta:
         model = AnonymousVote
         fields = '__all__'
+
+
+class InvitationRequestSerializer(Serializer):  # pylint: disable=W0223
+    username = serializers.CharField()
+    email = serializers.EmailField()
