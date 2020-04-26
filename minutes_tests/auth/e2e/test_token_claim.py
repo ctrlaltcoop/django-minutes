@@ -43,3 +43,13 @@ class TokenAuthenticationTest(LiveServerTestCase):
             '/api/v1/users/{0}/'.format(self.user.id)
         )
         self.assertEqual(response.status_code, 200)
+
+
+    def test_400_for_expired_token(self):
+        self.user_claim_token.expires = timezone.now() - timezone.timedelta(seconds=1)
+        self.user_claim_token.save()
+        response = self.client.post(
+            '/api/v1/token-claim/',
+            {'claim_token': self.user_claim_token.key}
+        )
+        self.assertEqual(response.status_code, 400)

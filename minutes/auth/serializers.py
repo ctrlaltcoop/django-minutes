@@ -24,7 +24,7 @@ class TokenRefreshSerializer(Serializer):  # pylint: disable=W0223
         refresh_token_key = attrs.get('refresh_token')
         try:
             refresh_token = Token.objects.get(token_type=TokenTypes.REFRESH, key=refresh_token_key)
-            if refresh_token.expires <= timezone.now():
+            if refresh_token.expires < timezone.now():
                 raise serializers.ValidationError('Refresh token expired', code='expired_refresh_token')
 
         except Token.DoesNotExist:
@@ -38,8 +38,8 @@ class ClaimSerializer(Serializer):  # pylint: disable=W0223
     def validate(self, attrs):
         claim_token_key = attrs.get('claim_token')
         try:
-            refresh_token = Token.objects.get(token_type=TokenTypes.CLAIM, key=claim_token_key)
-            if refresh_token.expires <= timezone.now():
+            claim_token = Token.objects.get(token_type=TokenTypes.CLAIM, key=claim_token_key)
+            if claim_token.expires < timezone.now():
                 raise serializers.ValidationError('Claim token expired', code='expired_claim_token')
         except Token.DoesNotExist:
             raise serializers.ValidationError('Invalid claim token', code='invalid_claim_token')
