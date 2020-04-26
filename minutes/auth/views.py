@@ -58,7 +58,6 @@ class TokenViewSet(GenericViewSet):
 
 
 class TokenRefreshViewSet(GenericViewSet):
-    permission_classes = [IsAuthenticated]
     serializer_class = TokenSetSerializer
 
     def create(self, request):

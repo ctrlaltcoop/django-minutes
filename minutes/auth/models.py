@@ -1,6 +1,3 @@
-from enum import Enum
-
-
 from django.apps import apps
 from django.conf import settings
 from django.db import models
@@ -17,13 +14,12 @@ class TokenTypes(IntegerChoices):
     AUTH = 1
 
 
-# Create your models here.
 class Token(BaseToken):
     token_type = IntegerField(choices=TokenTypes.choices)
     expires = models.DateTimeField()
     user = ForeignKey(settings.AUTH_USER_MODEL, related_name='tokens',
                       on_delete=models.CASCADE, verbose_name=_('User'))
-    
+
     def save(self, *args, **kwargs):
         if not self.pk and not self.expires:
             expiry_time = timezone.timedelta(seconds=app_conf.MINUTES_REFRESH_TOKEN_EXPIRES_IN) \

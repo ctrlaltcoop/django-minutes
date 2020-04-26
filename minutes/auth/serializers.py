@@ -10,14 +10,14 @@ class PasswordChangeSerializer(Serializer):  # pylint: disable=W0223
     new_password = serializers.CharField()
 
 
-class TokenSetSerializer(Serializer):
+class TokenSetSerializer(Serializer):  # pylint: disable=W0223
     auth_token_key = serializers.CharField()
     auth_token_expires = serializers.DateTimeField()
     refresh_token_key = serializers.CharField()
     refresh_token_expires = serializers.DateTimeField()
 
 
-class TokenRefreshSerializer(Serializer):
+class TokenRefreshSerializer(Serializer):  # pylint: disable=W0223
     refresh_token = serializers.CharField()
 
     def validate(self, attrs):
