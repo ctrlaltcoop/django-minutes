@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'ordered_model',
     'rest_framework',
     'minutes',
-    'minutes.auth'
+    'minutes.auth',
+    'minutes.frontend'
 ]
 
 MIDDLEWARE = [
