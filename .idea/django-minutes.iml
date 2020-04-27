@@ -15,6 +15,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
+      <excludeFolder url="file://$MODULE_DIR$/minutes/frontend/static_src/build" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.8 (django-minutes)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -25,6 +26,7 @@
       <list>
         <option value="$MODULE_DIR$/.venv/lib/python3.8/site-packages/django/forms/templates" />
         <option value="$MODULE_DIR$/minutes/templates" />
+        <option value="$MODULE_DIR$/minutes/frontend/templates" />
       </list>
     </option>
   </component>

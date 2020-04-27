@@ -48,4 +48,6 @@ urlpatterns = [
         template_name='minutes/redoc.html',
         extra_context={'schema_url': 'openapi-schema'}
     ), name='redoc'),
+
+    path('', include('minutes.frontend.urls'))
 ] + schema_patterns
