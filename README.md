@@ -24,23 +24,28 @@ As of now it is in initial development phase. Planned features for initial relea
 
 ## Developing
 
-### Development environment
+The app consist of backend code handled by this django app. Embedded in a subapp you'll find the
+frontend which is a react application. This section is therefore split in two parts.
+
+### Backend / Django
+
+#### Development environment
 
 Development is currently done with Python `3.8`. A list of supported python versions is TBD. 
 
-### Environment / Dependencies
+#### Environment / Dependencies
 
 This project uses [poetry](https://github.com/python-poetry/poetry) for dependency management. A simple `poetry install`
 will be sufficient for installing all dependencies. To jump into the environment on your shell use `poetry shell`.
 
-### Linting
+#### Linting
 
 The `minutes` folder should be automatically linted. Therefore execute this command to check your code:
 ```shell script
 pylint minutes
 ```
 
-### Tests
+#### Tests
 
 The tests for this applications are to be found in `minutes_tests/`.
 The tests make use of a special `settings.py` in `minutes_tests/settings.py`, so run tests either with
@@ -51,7 +56,7 @@ DJANGO_SETTINGS_MODULE=minutes_tests.settings django-admin test
 
 For convenience you can find a `runtests.py` that is basically doing exactly that.
 
-### Workbench
+#### Workbench
 
 To work on the app it is convenient to have a django project to start it in. For that reason we have `minutes_workbench`
 which is a very minimal project loading the app. To start use the following command:
@@ -60,10 +65,20 @@ which is a very minimal project loading the app. To start use the following comm
 DJANGO_SETTINGS_MODULE=minutes_workbench.settings django-admin runserver
 ```
 
-### Database migrations
+#### Database migrations
 
 You might to execute django database migrations which is possible via
 
 ```shell script
 DJANGO_SETTINGS_MODULE=minutes_workbench.settings django-admin runserver
 ```
+
+### Frontend / React
+
+For easy configuration and deployment the frontend is embedded in this django app. It is a react app with it's own
+toolchain (`create-react-app`). For development instructions visit [the README of the subproject](minutes/frontend/static_src/README.md)
+
+When executing the build script of the frontend application it copies the `index.html` of the app to the templates folder of `minutes.frontend`.
+All static resources are copied to the respective `static` folder. A simple [TemplateView](minutes/frontend/views.py) serves it.
+
+

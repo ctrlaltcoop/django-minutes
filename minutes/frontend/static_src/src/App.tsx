@@ -1,26 +1,34 @@
 import React from 'react';
-import logo from './logo.svg';
-import styles from './App.module.scss';
+import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
+import {Alignment, Button, Navbar} from "@blueprintjs/core";
+import MeetingSeries from "./MeetingSeries";
+import Administration from "./Administration";
 
 class App extends React.Component {
   render(): React.ReactNode {
     return (
-      <div className={styles.App}>
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo"/>
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Router>
+        <Navbar>
+          <Navbar.Group align={Alignment.LEFT}>
+            <Navbar.Heading>Minutes</Navbar.Heading>
+            <Navbar.Divider/>
+            <Link to="/series">
+              <Button className="bp3-minimal" icon="pulse" text="Meeting Series"/>
+            </Link>
+            <Link to="/administration">
+              <Button className="bp3-minimal" icon="settings" text="Administration"/>
+            </Link>
+          </Navbar.Group>
+        </Navbar>
+        <Switch>
+          <Route path="/series">
+            <MeetingSeries />
+          </Route>
+          <Route path="/administration">
+            <Administration />
+          </Route>
+        </Switch>
+      </Router>
     );
   }
 }
