@@ -45,7 +45,9 @@
   "jest": {
     "collectCoverageFrom": [
       "src/**/*.{js,jsx,ts,tsx}",
-      "!<rootDir>/node_modules/"
+      "!<rootDir>/node_modules/",
+      "!src/serviceWorker.ts",
+      "!src/index.tsx"
     ],
     "coverageReporters": [
       "cobertura"
