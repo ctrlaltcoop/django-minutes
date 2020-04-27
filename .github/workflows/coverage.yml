@@ -38,7 +38,6 @@ jobs:
       run: |
         cd minutes/frontend/static_src
         CI=true npm run test -- --coverage
-        cp coverage/cobertura-coverage.xml
     - name: Merge javascript and python coverage
       run: |
         mv coverage.xml coverage-python.xml
