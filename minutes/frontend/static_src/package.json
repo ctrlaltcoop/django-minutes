@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@blueprintjs/core": "^3.26.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -20,7 +21,8 @@
     "build": "PUBLIC_URL=/static/app/ react-scripts build",
     "postbuild": "rm -R ../static/app; mkdir -p ../static/app; cp -R build/* ../static/app &&  cp build/index.html ../templates/minutes/frontend/",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --ext js,ts,tsx src/"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -38,8 +40,16 @@
     ]
   },
   "devDependencies": {
-    "customize-cra": "^0.9.1",
     "node-sass": "^4.14.0"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!<rootDir>/node_modules/"
+    ],
+    "coverageReporters": [
+      "cobertura"
+    ]
   },
   "proxy": "http://localhost:8000"
 }

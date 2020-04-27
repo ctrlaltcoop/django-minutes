@@ -14,11 +14,36 @@ jobs:
         python -m pip install --upgrade pip
         pip install poetry
         poetry install
-    - name: Generate coverage report
+    - name: Generate coverage report for python
       run: |
         pip install coverage
         poetry run coverage run --source='./minutes' runtests.py
         poetry run coverage xml
+    - name: Setup Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - name: Javascript dependencies
+      run: |
+        cd minutes/frontend/static_src
+        npm i
+    - name: Cache node_modules
+      uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+    - name: Generate coverage report for javascript
+      run: |
+        cd minutes/frontend/static_src
+        CI=true npm run test -- --coverage
+        cp coverage/cobertura-coverage.xml
+    - name: Merge javascript and python coverage
+      run: |
+        mv coverage.xml coverage-python.xml
+        cp minutes/frontend/static_src/coverage/cobertura-coverage.xml coverage-js.xml
+        npx cobertura-merge -o coverage.xml django-minutes=coverage-python.xml django-minutes-frontend=coverage-js.xml
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:
