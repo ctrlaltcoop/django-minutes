@@ -115,5 +115,4 @@ class InvitationViewSet(GenericViewSet):
             inviting_user=request.user,
         )
         user_serializer = UserSerializer(instance=new_user)
-        user_serializer.is_valid(raise_exception=True)
-        return Response(user_serializer.validated_data, status=HTTP_201_CREATED)
+        return Response(user_serializer.data, status=HTTP_201_CREATED)
