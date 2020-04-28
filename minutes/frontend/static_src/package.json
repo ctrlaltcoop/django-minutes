@@ -51,7 +51,8 @@
       "src/**/*.{js,jsx,ts,tsx}",
       "!<rootDir>/node_modules/",
       "!src/serviceWorker.ts",
-      "!src/index.tsx"
+      "!src/index.tsx",
+      "!src/api/**/*"
     ],
     "coverageReporters": [
       "cobertura"
