@@ -11,7 +11,8 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.6"
 django = "^3.0.0"
-djangorestframework = "^3.11.0"
+# Using unreleased AutoSchema(operation_id_base="") feature - replace with stable once released
+djangorestframework = {git = "https://github.com/encode/django-rest-framework.git"}
 django-ordered-model = "^3.3.0"
 pyyaml = "^5.3.1"
 uritemplate = "^3.0.1"

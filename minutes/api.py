@@ -10,6 +10,7 @@ from minutes.models import MeetingSeries, AgendaMeetingItem, Decision, Meeting, 
     AgendaSubItem, MinutesUser, VoteChoice, RollCallVote, AnonymousVote
 from minutes.permissions import ParticipantReadOnly, MeetingOwnerReadWrite, Read, Create, \
     RelatedMeetingOwned, RelatedAgendaItemOwned, RelatedMeetingSeriesOwned, ReadWriteOwnUser, IsAdminUser
+from minutes.schema import MinutesSchema
 
 from minutes.serializers import UserSerializer, MeetingSeriesSerializer, MeetingSerializer, DecisionSerializer, \
     SubItemSerializer, AgendaItemSerializer, ParticipantSerializer, VoteChoiceSerializer, RollCallVoteSerializer, \
@@ -17,6 +18,7 @@ from minutes.serializers import UserSerializer, MeetingSeriesSerializer, Meeting
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    schema = MinutesSchema(tags=['minutes'])
     permission_classes = [
         IsAdminUser | (IsAuthenticated & ReadWriteOwnUser)
     ]
@@ -25,6 +27,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class ParticipantViewSet(viewsets.ModelViewSet):
+    schema = MinutesSchema(tags=['minutes'])
     permission_classes = [
         IsAuthenticated,
     ]
@@ -33,12 +36,14 @@ class ParticipantViewSet(viewsets.ModelViewSet):
 
 
 class MeetingSeriesViewSet(viewsets.ModelViewSet):
+    schema = MinutesSchema(tags=['minutes'])
     permission_classes = [IsAuthenticated]
     queryset = MeetingSeries.objects.all()
     serializer_class = MeetingSeriesSerializer
 
 
 class MeetingViewSet(viewsets.ModelViewSet):
+    schema = MinutesSchema(tags=['minutes'])
     permission_classes = [
         IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite | (RelatedMeetingSeriesOwned & Create))
     ]
@@ -55,6 +60,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
 
 class DecisionViewSet(viewsets.ModelViewSet):
+    schema = MinutesSchema(tags=['minutes'])
     permission_classes = [
         IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite)
     ]
@@ -70,6 +76,7 @@ class DecisionViewSet(viewsets.ModelViewSet):
 
 
 class AgendaItemViewSet(viewsets.ModelViewSet):
+    schema = MinutesSchema(tags=['minutes'])
     permission_classes = [
         IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite | (Create & RelatedMeetingOwned))
     ]
@@ -86,6 +93,7 @@ class AgendaItemViewSet(viewsets.ModelViewSet):
 
 
 class AgendaSubItemViewSet(viewsets.ModelViewSet):
+    schema = MinutesSchema(tags=['minutes'])
     permission_classes = [
         IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite | (Create & RelatedAgendaItemOwned))
     ]
@@ -101,6 +109,7 @@ class AgendaSubItemViewSet(viewsets.ModelViewSet):
 
 
 class VoteChoiceViewSet(viewsets.ModelViewSet):
+    schema = MinutesSchema(tags=['minutes'])
     permission_classes = [
         (IsAuthenticated & Read) | IsAdminUser
     ]
@@ -111,6 +120,7 @@ class VoteChoiceViewSet(viewsets.ModelViewSet):
 
 
 class RollCallVoteViewSet(viewsets.ModelViewSet):
+    schema = MinutesSchema(tags=['minutes'])
     permission_classes = [
         IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite)
     ]
@@ -126,6 +136,7 @@ class RollCallVoteViewSet(viewsets.ModelViewSet):
 
 
 class AnonymousVoteViewSet(viewsets.ModelViewSet):
+    schema = MinutesSchema(tags=['minutes'])
     permission_classes = [
         IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite)
     ]

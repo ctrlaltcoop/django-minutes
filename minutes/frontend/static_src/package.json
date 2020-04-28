@@ -23,7 +23,8 @@
     "postbuild": "rm -R ../static/app; mkdir -p ../static/app; cp -R build/* ../static/app &&  cp build/index.html ../templates/minutes/frontend/",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint --ext js,ts,tsx src/"
+    "lint": "eslint --ext js,ts,tsx src/",
+    "updateApiClient": ". scripts/update_api_client.sh"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -41,6 +42,7 @@
     ]
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^1.0.12-4.3.0",
     "@types/react-router-dom": "^5.1.5",
     "node-sass": "^4.14.0"
   },
