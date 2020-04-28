@@ -56,10 +56,10 @@ class TokenViewSet(GenericViewSet):
         serializer: UserCredentialsSerializer = UserCredentialsSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         token_set_serializer = self.get_serializer(
-            data=create_new_token_set(User.objects.get(username=serializer.data['username']))
+            data=create_new_token_set(serializer.validated_data['user'])
         )
         token_set_serializer.is_valid()
-        return Response(token_set_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(token_set_serializer.validated_data, status=status.HTTP_201_CREATED)
 
 
 class TokenRefreshViewSet(GenericViewSet):
@@ -69,12 +69,12 @@ class TokenRefreshViewSet(GenericViewSet):
     def create(self, request):
         serializer: TokenRefreshSerializer = TokenRefreshSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = Token.objects.get(key=serializer.data['refresh_token']).user
+        user = Token.objects.get(key=serializer.validated_data['refresh_token']).user
         token_set_serializer = self.get_serializer(
             data=create_new_token_set(user)
         )
         token_set_serializer.is_valid()
-        return Response(token_set_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(token_set_serializer.validated_data, status=status.HTTP_201_CREATED)
 
 
 class TokenClaimViewSet(GenericViewSet):
@@ -84,14 +84,14 @@ class TokenClaimViewSet(GenericViewSet):
     def create(self, request):
         serializer: ClaimSerializer = ClaimSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        token = Token.objects.get(key=serializer.data['claim_token'])
+        token = Token.objects.get(key=serializer.validated_data['claim_token'])
         user = token.user
         token.delete()
         token_set_serializer = self.get_serializer(
             data=create_new_token_set(user)
         )
         token_set_serializer.is_valid()
-        return Response(token_set_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(token_set_serializer.validated_data, status=status.HTTP_201_CREATED)
 
 
 class InvitationViewSet(GenericViewSet):
@@ -107,12 +107,13 @@ class InvitationViewSet(GenericViewSet):
         if User.objects.filter(email=invitation_request.data['email']).exists():
             raise ValidationError('A user with this email address already exists')
         new_user = User.objects.create(
-            username=invitation_request.data['username'],
-            email=invitation_request.data['email']
+            username=invitation_request.validated_data['username'],
+            email=invitation_request.validated_data['email']
         )
         Invitation.objects.create(
             invited_user=new_user,
             inviting_user=request.user,
         )
         user_serializer = UserSerializer(instance=new_user)
-        return Response(user_serializer.data, status=HTTP_201_CREATED)
+        user_serializer.is_valid(raise_exception=True)
+        return Response(user_serializer.validated_data, status=HTTP_201_CREATED)
