@@ -18,57 +18,57 @@ import {
     AgendaItem,
     AgendaItemFromJSON,
     AgendaItemToJSON,
-    AgendaItemResponse,
-    AgendaItemResponseFromJSON,
-    AgendaItemResponseToJSON,
     AnonymousVote,
     AnonymousVoteFromJSON,
     AnonymousVoteToJSON,
-    AnonymousVoteResponse,
-    AnonymousVoteResponseFromJSON,
-    AnonymousVoteResponseToJSON,
     Decision,
     DecisionFromJSON,
     DecisionToJSON,
-    DecisionResponse,
-    DecisionResponseFromJSON,
-    DecisionResponseToJSON,
+    ListAgendaItemsResponse,
+    ListAgendaItemsResponseFromJSON,
+    ListAgendaItemsResponseToJSON,
+    ListAnonymousVotesResponse,
+    ListAnonymousVotesResponseFromJSON,
+    ListAnonymousVotesResponseToJSON,
+    ListDecisionsResponse,
+    ListDecisionsResponseFromJSON,
+    ListDecisionsResponseToJSON,
+    ListMeetingSeriesResponse,
+    ListMeetingSeriesResponseFromJSON,
+    ListMeetingSeriesResponseToJSON,
+    ListMeetingsResponse,
+    ListMeetingsResponseFromJSON,
+    ListMeetingsResponseToJSON,
+    ListRollCallVotesResponse,
+    ListRollCallVotesResponseFromJSON,
+    ListRollCallVotesResponseToJSON,
+    ListSubItemsResponse,
+    ListSubItemsResponseFromJSON,
+    ListSubItemsResponseToJSON,
+    ListUsersResponse,
+    ListUsersResponseFromJSON,
+    ListUsersResponseToJSON,
+    ListVoteChoicesResponse,
+    ListVoteChoicesResponseFromJSON,
+    ListVoteChoicesResponseToJSON,
     Meeting,
     MeetingFromJSON,
     MeetingToJSON,
-    MeetingResponse,
-    MeetingResponseFromJSON,
-    MeetingResponseToJSON,
     MeetingSeries,
     MeetingSeriesFromJSON,
     MeetingSeriesToJSON,
-    MeetingSeriesResponse,
-    MeetingSeriesResponseFromJSON,
-    MeetingSeriesResponseToJSON,
     RollCallVote,
     RollCallVoteFromJSON,
     RollCallVoteToJSON,
-    RollCallVoteResponse,
-    RollCallVoteResponseFromJSON,
-    RollCallVoteResponseToJSON,
     SubItem,
     SubItemFromJSON,
     SubItemToJSON,
-    SubItemResponse,
-    SubItemResponseFromJSON,
-    SubItemResponseToJSON,
     User,
     UserFromJSON,
     UserToJSON,
-    UserResponse,
-    UserResponseFromJSON,
-    UserResponseToJSON,
     VoteChoice,
     VoteChoiceFromJSON,
     VoteChoiceToJSON,
-    VoteChoiceResponse,
-    VoteChoiceResponseFromJSON,
-    VoteChoiceResponseToJSON,
 } from '../models';
 
 export interface CreateAgendaItemRequest {
@@ -861,7 +861,7 @@ export class MinutesApi extends runtime.BaseAPI {
 
     /**
      */
-    async listAgendaItemsRaw(requestParameters: ListAgendaItemsRequest): Promise<runtime.ApiResponse<AgendaItemResponse>> {
+    async listAgendaItemsRaw(requestParameters: ListAgendaItemsRequest): Promise<runtime.ApiResponse<ListAgendaItemsResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.limit !== undefined) {
@@ -889,19 +889,19 @@ export class MinutesApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AgendaItemResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ListAgendaItemsResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async listAgendaItems(requestParameters: ListAgendaItemsRequest): Promise<AgendaItemResponse> {
+    async listAgendaItems(requestParameters: ListAgendaItemsRequest): Promise<ListAgendaItemsResponse> {
         const response = await this.listAgendaItemsRaw(requestParameters);
         return await response.value();
     }
 
     /**
      */
-    async listAnonymousVotesRaw(requestParameters: ListAnonymousVotesRequest): Promise<runtime.ApiResponse<AnonymousVoteResponse>> {
+    async listAnonymousVotesRaw(requestParameters: ListAnonymousVotesRequest): Promise<runtime.ApiResponse<ListAnonymousVotesResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.limit !== undefined) {
@@ -925,19 +925,19 @@ export class MinutesApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => AnonymousVoteResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ListAnonymousVotesResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async listAnonymousVotes(requestParameters: ListAnonymousVotesRequest): Promise<AnonymousVoteResponse> {
+    async listAnonymousVotes(requestParameters: ListAnonymousVotesRequest): Promise<ListAnonymousVotesResponse> {
         const response = await this.listAnonymousVotesRaw(requestParameters);
         return await response.value();
     }
 
     /**
      */
-    async listDecisionsRaw(requestParameters: ListDecisionsRequest): Promise<runtime.ApiResponse<DecisionResponse>> {
+    async listDecisionsRaw(requestParameters: ListDecisionsRequest): Promise<runtime.ApiResponse<ListDecisionsResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.limit !== undefined) {
@@ -961,19 +961,19 @@ export class MinutesApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => DecisionResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ListDecisionsResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async listDecisions(requestParameters: ListDecisionsRequest): Promise<DecisionResponse> {
+    async listDecisions(requestParameters: ListDecisionsRequest): Promise<ListDecisionsResponse> {
         const response = await this.listDecisionsRaw(requestParameters);
         return await response.value();
     }
 
     /**
      */
-    async listMeetingSeriesRaw(requestParameters: ListMeetingSeriesRequest): Promise<runtime.ApiResponse<MeetingSeriesResponse>> {
+    async listMeetingSeriesRaw(requestParameters: ListMeetingSeriesRequest): Promise<runtime.ApiResponse<ListMeetingSeriesResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.limit !== undefined) {
@@ -993,19 +993,19 @@ export class MinutesApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MeetingSeriesResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ListMeetingSeriesResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async listMeetingSeries(requestParameters: ListMeetingSeriesRequest): Promise<MeetingSeriesResponse> {
+    async listMeetingSeries(requestParameters: ListMeetingSeriesRequest): Promise<ListMeetingSeriesResponse> {
         const response = await this.listMeetingSeriesRaw(requestParameters);
         return await response.value();
     }
 
     /**
      */
-    async listMeetingsRaw(requestParameters: ListMeetingsRequest): Promise<runtime.ApiResponse<MeetingResponse>> {
+    async listMeetingsRaw(requestParameters: ListMeetingsRequest): Promise<runtime.ApiResponse<ListMeetingsResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.limit !== undefined) {
@@ -1025,19 +1025,19 @@ export class MinutesApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => MeetingResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ListMeetingsResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async listMeetings(requestParameters: ListMeetingsRequest): Promise<MeetingResponse> {
+    async listMeetings(requestParameters: ListMeetingsRequest): Promise<ListMeetingsResponse> {
         const response = await this.listMeetingsRaw(requestParameters);
         return await response.value();
     }
 
     /**
      */
-    async listRollCallVotesRaw(requestParameters: ListRollCallVotesRequest): Promise<runtime.ApiResponse<RollCallVoteResponse>> {
+    async listRollCallVotesRaw(requestParameters: ListRollCallVotesRequest): Promise<runtime.ApiResponse<ListRollCallVotesResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.limit !== undefined) {
@@ -1061,19 +1061,19 @@ export class MinutesApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => RollCallVoteResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ListRollCallVotesResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async listRollCallVotes(requestParameters: ListRollCallVotesRequest): Promise<RollCallVoteResponse> {
+    async listRollCallVotes(requestParameters: ListRollCallVotesRequest): Promise<ListRollCallVotesResponse> {
         const response = await this.listRollCallVotesRaw(requestParameters);
         return await response.value();
     }
 
     /**
      */
-    async listSubItemsRaw(requestParameters: ListSubItemsRequest): Promise<runtime.ApiResponse<SubItemResponse>> {
+    async listSubItemsRaw(requestParameters: ListSubItemsRequest): Promise<runtime.ApiResponse<ListSubItemsResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.limit !== undefined) {
@@ -1097,19 +1097,19 @@ export class MinutesApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => SubItemResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ListSubItemsResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async listSubItems(requestParameters: ListSubItemsRequest): Promise<SubItemResponse> {
+    async listSubItems(requestParameters: ListSubItemsRequest): Promise<ListSubItemsResponse> {
         const response = await this.listSubItemsRaw(requestParameters);
         return await response.value();
     }
 
     /**
      */
-    async listUsersRaw(requestParameters: ListUsersRequest): Promise<runtime.ApiResponse<UserResponse>> {
+    async listUsersRaw(requestParameters: ListUsersRequest): Promise<runtime.ApiResponse<ListUsersResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.limit !== undefined) {
@@ -1129,19 +1129,19 @@ export class MinutesApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => UserResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ListUsersResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async listUsers(requestParameters: ListUsersRequest): Promise<UserResponse> {
+    async listUsers(requestParameters: ListUsersRequest): Promise<ListUsersResponse> {
         const response = await this.listUsersRaw(requestParameters);
         return await response.value();
     }
 
     /**
      */
-    async listVoteChoicesRaw(requestParameters: ListVoteChoicesRequest): Promise<runtime.ApiResponse<VoteChoiceResponse>> {
+    async listVoteChoicesRaw(requestParameters: ListVoteChoicesRequest): Promise<runtime.ApiResponse<ListVoteChoicesResponse>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         if (requestParameters.limit !== undefined) {
@@ -1161,12 +1161,12 @@ export class MinutesApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => VoteChoiceResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ListVoteChoicesResponseFromJSON(jsonValue));
     }
 
     /**
      */
-    async listVoteChoices(requestParameters: ListVoteChoicesRequest): Promise<VoteChoiceResponse> {
+    async listVoteChoices(requestParameters: ListVoteChoicesRequest): Promise<ListVoteChoicesResponse> {
         const response = await this.listVoteChoicesRaw(requestParameters);
         return await response.value();
     }

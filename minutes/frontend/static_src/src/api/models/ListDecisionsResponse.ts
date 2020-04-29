@@ -14,49 +14,49 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    AgendaItem,
-    AgendaItemFromJSON,
-    AgendaItemFromJSONTyped,
-    AgendaItemToJSON,
+    Decision,
+    DecisionFromJSON,
+    DecisionFromJSONTyped,
+    DecisionToJSON,
 } from './';
 
 /**
  * 
  * @export
- * @interface AgendaItemResponse
+ * @interface ListDecisionsResponse
  */
-export interface AgendaItemResponse {
+export interface ListDecisionsResponse {
     /**
      * 
      * @type {number}
-     * @memberof AgendaItemResponse
+     * @memberof ListDecisionsResponse
      */
     count?: number;
     /**
      * 
      * @type {string}
-     * @memberof AgendaItemResponse
+     * @memberof ListDecisionsResponse
      */
     next?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof AgendaItemResponse
+     * @memberof ListDecisionsResponse
      */
     previous?: string | null;
     /**
      * 
-     * @type {Array<AgendaItem>}
-     * @memberof AgendaItemResponse
+     * @type {Array<Decision>}
+     * @memberof ListDecisionsResponse
      */
-    results?: Array<AgendaItem>;
+    results?: Array<Decision>;
 }
 
-export function AgendaItemResponseFromJSON(json: any): AgendaItemResponse {
-    return AgendaItemResponseFromJSONTyped(json, false);
+export function ListDecisionsResponseFromJSON(json: any): ListDecisionsResponse {
+    return ListDecisionsResponseFromJSONTyped(json, false);
 }
 
-export function AgendaItemResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): AgendaItemResponse {
+export function ListDecisionsResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ListDecisionsResponse {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -65,11 +65,11 @@ export function AgendaItemResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'count': !exists(json, 'count') ? undefined : json['count'],
         'next': !exists(json, 'next') ? undefined : json['next'],
         'previous': !exists(json, 'previous') ? undefined : json['previous'],
-        'results': !exists(json, 'results') ? undefined : ((json['results'] as Array<any>).map(AgendaItemFromJSON)),
+        'results': !exists(json, 'results') ? undefined : ((json['results'] as Array<any>).map(DecisionFromJSON)),
     };
 }
 
-export function AgendaItemResponseToJSON(value?: AgendaItemResponse | null): any {
+export function ListDecisionsResponseToJSON(value?: ListDecisionsResponse | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -81,7 +81,7 @@ export function AgendaItemResponseToJSON(value?: AgendaItemResponse | null): any
         'count': value.count,
         'next': value.next,
         'previous': value.previous,
-        'results': value.results === undefined ? undefined : ((value.results as Array<any>).map(AgendaItemToJSON)),
+        'results': value.results === undefined ? undefined : ((value.results as Array<any>).map(DecisionToJSON)),
     };
 }
 

@@ -23,40 +23,40 @@ import {
 /**
  * 
  * @export
- * @interface MeetingSeriesResponse
+ * @interface ListMeetingSeriesResponse
  */
-export interface MeetingSeriesResponse {
+export interface ListMeetingSeriesResponse {
     /**
      * 
      * @type {number}
-     * @memberof MeetingSeriesResponse
+     * @memberof ListMeetingSeriesResponse
      */
     count?: number;
     /**
      * 
      * @type {string}
-     * @memberof MeetingSeriesResponse
+     * @memberof ListMeetingSeriesResponse
      */
     next?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof MeetingSeriesResponse
+     * @memberof ListMeetingSeriesResponse
      */
     previous?: string | null;
     /**
      * 
      * @type {Array<MeetingSeries>}
-     * @memberof MeetingSeriesResponse
+     * @memberof ListMeetingSeriesResponse
      */
     results?: Array<MeetingSeries>;
 }
 
-export function MeetingSeriesResponseFromJSON(json: any): MeetingSeriesResponse {
-    return MeetingSeriesResponseFromJSONTyped(json, false);
+export function ListMeetingSeriesResponseFromJSON(json: any): ListMeetingSeriesResponse {
+    return ListMeetingSeriesResponseFromJSONTyped(json, false);
 }
 
-export function MeetingSeriesResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): MeetingSeriesResponse {
+export function ListMeetingSeriesResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ListMeetingSeriesResponse {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -69,7 +69,7 @@ export function MeetingSeriesResponseFromJSONTyped(json: any, ignoreDiscriminato
     };
 }
 
-export function MeetingSeriesResponseToJSON(value?: MeetingSeriesResponse | null): any {
+export function ListMeetingSeriesResponseToJSON(value?: ListMeetingSeriesResponse | null): any {
     if (value === undefined) {
         return undefined;
     }

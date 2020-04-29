@@ -14,49 +14,49 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    VoteChoice,
-    VoteChoiceFromJSON,
-    VoteChoiceFromJSONTyped,
-    VoteChoiceToJSON,
+    User,
+    UserFromJSON,
+    UserFromJSONTyped,
+    UserToJSON,
 } from './';
 
 /**
  * 
  * @export
- * @interface VoteChoiceResponse
+ * @interface ListUsersResponse
  */
-export interface VoteChoiceResponse {
+export interface ListUsersResponse {
     /**
      * 
      * @type {number}
-     * @memberof VoteChoiceResponse
+     * @memberof ListUsersResponse
      */
     count?: number;
     /**
      * 
      * @type {string}
-     * @memberof VoteChoiceResponse
+     * @memberof ListUsersResponse
      */
     next?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof VoteChoiceResponse
+     * @memberof ListUsersResponse
      */
     previous?: string | null;
     /**
      * 
-     * @type {Array<VoteChoice>}
-     * @memberof VoteChoiceResponse
+     * @type {Array<User>}
+     * @memberof ListUsersResponse
      */
-    results?: Array<VoteChoice>;
+    results?: Array<User>;
 }
 
-export function VoteChoiceResponseFromJSON(json: any): VoteChoiceResponse {
-    return VoteChoiceResponseFromJSONTyped(json, false);
+export function ListUsersResponseFromJSON(json: any): ListUsersResponse {
+    return ListUsersResponseFromJSONTyped(json, false);
 }
 
-export function VoteChoiceResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): VoteChoiceResponse {
+export function ListUsersResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ListUsersResponse {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -65,11 +65,11 @@ export function VoteChoiceResponseFromJSONTyped(json: any, ignoreDiscriminator: 
         'count': !exists(json, 'count') ? undefined : json['count'],
         'next': !exists(json, 'next') ? undefined : json['next'],
         'previous': !exists(json, 'previous') ? undefined : json['previous'],
-        'results': !exists(json, 'results') ? undefined : ((json['results'] as Array<any>).map(VoteChoiceFromJSON)),
+        'results': !exists(json, 'results') ? undefined : ((json['results'] as Array<any>).map(UserFromJSON)),
     };
 }
 
-export function VoteChoiceResponseToJSON(value?: VoteChoiceResponse | null): any {
+export function ListUsersResponseToJSON(value?: ListUsersResponse | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -81,7 +81,7 @@ export function VoteChoiceResponseToJSON(value?: VoteChoiceResponse | null): any
         'count': value.count,
         'next': value.next,
         'previous': value.previous,
-        'results': value.results === undefined ? undefined : ((value.results as Array<any>).map(VoteChoiceToJSON)),
+        'results': value.results === undefined ? undefined : ((value.results as Array<any>).map(UserToJSON)),
     };
 }
 

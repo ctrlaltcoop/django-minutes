@@ -5,13 +5,13 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer as UserCred
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.status import HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet
 
 from minutes.auth.models import Token, TokenTypes, Invitation
 from minutes.auth.serializers import TokenRefreshSerializer, TokenSetSerializer, ClaimSerializer
 from minutes.auth.serializers import PasswordChangeSerializer
-from minutes.schema import MinutesSchema
 from minutes.serializers import InvitationRequestSerializer, UserSerializer
 
 
@@ -34,7 +34,7 @@ def create_new_token_set(user) -> dict:
 
 
 class PasswordChangeViewSet(GenericViewSet):
-    schema = MinutesSchema(tags=['auth'])
+    schema = AutoSchema(tags=['auth'])
     permission_classes = [IsAuthenticated]
     serializer_class = PasswordChangeSerializer
 
@@ -50,7 +50,7 @@ class PasswordChangeViewSet(GenericViewSet):
 
 class TokenViewSet(GenericViewSet):
     serializer_class = TokenSetSerializer
-    schema = MinutesSchema(operation_id_base="TokenSetByCredentials", tags=['auth'])
+    schema = AutoSchema(operation_id_base="TokenSetByCredentials", tags=['auth'])
 
     def create(self, request):
         serializer: UserCredentialsSerializer = UserCredentialsSerializer(data=request.data)
@@ -63,7 +63,7 @@ class TokenViewSet(GenericViewSet):
 
 
 class TokenRefreshViewSet(GenericViewSet):
-    schema = MinutesSchema(operation_id_base="TokenSetByRefresh", tags=['auth'])
+    schema = AutoSchema(operation_id_base="TokenSetByRefresh", tags=['auth'])
     serializer_class = TokenSetSerializer
 
     def create(self, request):
@@ -79,7 +79,7 @@ class TokenRefreshViewSet(GenericViewSet):
 
 class TokenClaimViewSet(GenericViewSet):
     serializer_class = TokenSetSerializer
-    schema = MinutesSchema(operation_id_base="TokenSetByClaim", tags=['auth'])
+    schema = AutoSchema(operation_id_base="TokenSetByClaim", tags=['auth'])
 
     def create(self, request):
         serializer: ClaimSerializer = ClaimSerializer(data=request.data)
@@ -95,7 +95,7 @@ class TokenClaimViewSet(GenericViewSet):
 
 
 class InvitationViewSet(GenericViewSet):
-    schema = MinutesSchema(tags=['auth'])
+    schema = AutoSchema(tags=['auth'])
     permission_classes = [
         IsAuthenticated
     ]

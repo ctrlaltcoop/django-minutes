@@ -14,49 +14,49 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    Decision,
-    DecisionFromJSON,
-    DecisionFromJSONTyped,
-    DecisionToJSON,
+    Meeting,
+    MeetingFromJSON,
+    MeetingFromJSONTyped,
+    MeetingToJSON,
 } from './';
 
 /**
  * 
  * @export
- * @interface DecisionResponse
+ * @interface ListMeetingsResponse
  */
-export interface DecisionResponse {
+export interface ListMeetingsResponse {
     /**
      * 
      * @type {number}
-     * @memberof DecisionResponse
+     * @memberof ListMeetingsResponse
      */
     count?: number;
     /**
      * 
      * @type {string}
-     * @memberof DecisionResponse
+     * @memberof ListMeetingsResponse
      */
     next?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof DecisionResponse
+     * @memberof ListMeetingsResponse
      */
     previous?: string | null;
     /**
      * 
-     * @type {Array<Decision>}
-     * @memberof DecisionResponse
+     * @type {Array<Meeting>}
+     * @memberof ListMeetingsResponse
      */
-    results?: Array<Decision>;
+    results?: Array<Meeting>;
 }
 
-export function DecisionResponseFromJSON(json: any): DecisionResponse {
-    return DecisionResponseFromJSONTyped(json, false);
+export function ListMeetingsResponseFromJSON(json: any): ListMeetingsResponse {
+    return ListMeetingsResponseFromJSONTyped(json, false);
 }
 
-export function DecisionResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): DecisionResponse {
+export function ListMeetingsResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ListMeetingsResponse {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -65,11 +65,11 @@ export function DecisionResponseFromJSONTyped(json: any, ignoreDiscriminator: bo
         'count': !exists(json, 'count') ? undefined : json['count'],
         'next': !exists(json, 'next') ? undefined : json['next'],
         'previous': !exists(json, 'previous') ? undefined : json['previous'],
-        'results': !exists(json, 'results') ? undefined : ((json['results'] as Array<any>).map(DecisionFromJSON)),
+        'results': !exists(json, 'results') ? undefined : ((json['results'] as Array<any>).map(MeetingFromJSON)),
     };
 }
 
-export function DecisionResponseToJSON(value?: DecisionResponse | null): any {
+export function ListMeetingsResponseToJSON(value?: ListMeetingsResponse | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -81,7 +81,7 @@ export function DecisionResponseToJSON(value?: DecisionResponse | null): any {
         'count': value.count,
         'next': value.next,
         'previous': value.previous,
-        'results': value.results === undefined ? undefined : ((value.results as Array<any>).map(DecisionToJSON)),
+        'results': value.results === undefined ? undefined : ((value.results as Array<any>).map(MeetingToJSON)),
     };
 }
 

@@ -14,49 +14,49 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    SubItem,
-    SubItemFromJSON,
-    SubItemFromJSONTyped,
-    SubItemToJSON,
+    RollCallVote,
+    RollCallVoteFromJSON,
+    RollCallVoteFromJSONTyped,
+    RollCallVoteToJSON,
 } from './';
 
 /**
  * 
  * @export
- * @interface SubItemResponse
+ * @interface ListRollCallVotesResponse
  */
-export interface SubItemResponse {
+export interface ListRollCallVotesResponse {
     /**
      * 
      * @type {number}
-     * @memberof SubItemResponse
+     * @memberof ListRollCallVotesResponse
      */
     count?: number;
     /**
      * 
      * @type {string}
-     * @memberof SubItemResponse
+     * @memberof ListRollCallVotesResponse
      */
     next?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof SubItemResponse
+     * @memberof ListRollCallVotesResponse
      */
     previous?: string | null;
     /**
      * 
-     * @type {Array<SubItem>}
-     * @memberof SubItemResponse
+     * @type {Array<RollCallVote>}
+     * @memberof ListRollCallVotesResponse
      */
-    results?: Array<SubItem>;
+    results?: Array<RollCallVote>;
 }
 
-export function SubItemResponseFromJSON(json: any): SubItemResponse {
-    return SubItemResponseFromJSONTyped(json, false);
+export function ListRollCallVotesResponseFromJSON(json: any): ListRollCallVotesResponse {
+    return ListRollCallVotesResponseFromJSONTyped(json, false);
 }
 
-export function SubItemResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): SubItemResponse {
+export function ListRollCallVotesResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ListRollCallVotesResponse {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -65,11 +65,11 @@ export function SubItemResponseFromJSONTyped(json: any, ignoreDiscriminator: boo
         'count': !exists(json, 'count') ? undefined : json['count'],
         'next': !exists(json, 'next') ? undefined : json['next'],
         'previous': !exists(json, 'previous') ? undefined : json['previous'],
-        'results': !exists(json, 'results') ? undefined : ((json['results'] as Array<any>).map(SubItemFromJSON)),
+        'results': !exists(json, 'results') ? undefined : ((json['results'] as Array<any>).map(RollCallVoteFromJSON)),
     };
 }
 
-export function SubItemResponseToJSON(value?: SubItemResponse | null): any {
+export function ListRollCallVotesResponseToJSON(value?: ListRollCallVotesResponse | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -81,7 +81,7 @@ export function SubItemResponseToJSON(value?: SubItemResponse | null): any {
         'count': value.count,
         'next': value.next,
         'previous': value.previous,
-        'results': value.results === undefined ? undefined : ((value.results as Array<any>).map(SubItemToJSON)),
+        'results': value.results === undefined ? undefined : ((value.results as Array<any>).map(RollCallVoteToJSON)),
     };
 }
 

@@ -14,49 +14,49 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    AnonymousVote,
-    AnonymousVoteFromJSON,
-    AnonymousVoteFromJSONTyped,
-    AnonymousVoteToJSON,
+    VoteChoice,
+    VoteChoiceFromJSON,
+    VoteChoiceFromJSONTyped,
+    VoteChoiceToJSON,
 } from './';
 
 /**
  * 
  * @export
- * @interface AnonymousVoteResponse
+ * @interface ListVoteChoicesResponse
  */
-export interface AnonymousVoteResponse {
+export interface ListVoteChoicesResponse {
     /**
      * 
      * @type {number}
-     * @memberof AnonymousVoteResponse
+     * @memberof ListVoteChoicesResponse
      */
     count?: number;
     /**
      * 
      * @type {string}
-     * @memberof AnonymousVoteResponse
+     * @memberof ListVoteChoicesResponse
      */
     next?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof AnonymousVoteResponse
+     * @memberof ListVoteChoicesResponse
      */
     previous?: string | null;
     /**
      * 
-     * @type {Array<AnonymousVote>}
-     * @memberof AnonymousVoteResponse
+     * @type {Array<VoteChoice>}
+     * @memberof ListVoteChoicesResponse
      */
-    results?: Array<AnonymousVote>;
+    results?: Array<VoteChoice>;
 }
 
-export function AnonymousVoteResponseFromJSON(json: any): AnonymousVoteResponse {
-    return AnonymousVoteResponseFromJSONTyped(json, false);
+export function ListVoteChoicesResponseFromJSON(json: any): ListVoteChoicesResponse {
+    return ListVoteChoicesResponseFromJSONTyped(json, false);
 }
 
-export function AnonymousVoteResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): AnonymousVoteResponse {
+export function ListVoteChoicesResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ListVoteChoicesResponse {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -65,11 +65,11 @@ export function AnonymousVoteResponseFromJSONTyped(json: any, ignoreDiscriminato
         'count': !exists(json, 'count') ? undefined : json['count'],
         'next': !exists(json, 'next') ? undefined : json['next'],
         'previous': !exists(json, 'previous') ? undefined : json['previous'],
-        'results': !exists(json, 'results') ? undefined : ((json['results'] as Array<any>).map(AnonymousVoteFromJSON)),
+        'results': !exists(json, 'results') ? undefined : ((json['results'] as Array<any>).map(VoteChoiceFromJSON)),
     };
 }
 
-export function AnonymousVoteResponseToJSON(value?: AnonymousVoteResponse | null): any {
+export function ListVoteChoicesResponseToJSON(value?: ListVoteChoicesResponse | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -81,7 +81,7 @@ export function AnonymousVoteResponseToJSON(value?: AnonymousVoteResponse | null
         'count': value.count,
         'next': value.next,
         'previous': value.previous,
-        'results': value.results === undefined ? undefined : ((value.results as Array<any>).map(AnonymousVoteToJSON)),
+        'results': value.results === undefined ? undefined : ((value.results as Array<any>).map(VoteChoiceToJSON)),
     };
 }
 

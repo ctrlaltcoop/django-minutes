@@ -14,49 +14,49 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    User,
-    UserFromJSON,
-    UserFromJSONTyped,
-    UserToJSON,
+    AgendaItem,
+    AgendaItemFromJSON,
+    AgendaItemFromJSONTyped,
+    AgendaItemToJSON,
 } from './';
 
 /**
  * 
  * @export
- * @interface UserResponse
+ * @interface ListAgendaItemsResponse
  */
-export interface UserResponse {
+export interface ListAgendaItemsResponse {
     /**
      * 
      * @type {number}
-     * @memberof UserResponse
+     * @memberof ListAgendaItemsResponse
      */
     count?: number;
     /**
      * 
      * @type {string}
-     * @memberof UserResponse
+     * @memberof ListAgendaItemsResponse
      */
     next?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof UserResponse
+     * @memberof ListAgendaItemsResponse
      */
     previous?: string | null;
     /**
      * 
-     * @type {Array<User>}
-     * @memberof UserResponse
+     * @type {Array<AgendaItem>}
+     * @memberof ListAgendaItemsResponse
      */
-    results?: Array<User>;
+    results?: Array<AgendaItem>;
 }
 
-export function UserResponseFromJSON(json: any): UserResponse {
-    return UserResponseFromJSONTyped(json, false);
+export function ListAgendaItemsResponseFromJSON(json: any): ListAgendaItemsResponse {
+    return ListAgendaItemsResponseFromJSONTyped(json, false);
 }
 
-export function UserResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): UserResponse {
+export function ListAgendaItemsResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ListAgendaItemsResponse {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -65,11 +65,11 @@ export function UserResponseFromJSONTyped(json: any, ignoreDiscriminator: boolea
         'count': !exists(json, 'count') ? undefined : json['count'],
         'next': !exists(json, 'next') ? undefined : json['next'],
         'previous': !exists(json, 'previous') ? undefined : json['previous'],
-        'results': !exists(json, 'results') ? undefined : ((json['results'] as Array<any>).map(UserFromJSON)),
+        'results': !exists(json, 'results') ? undefined : ((json['results'] as Array<any>).map(AgendaItemFromJSON)),
     };
 }
 
-export function UserResponseToJSON(value?: UserResponse | null): any {
+export function ListAgendaItemsResponseToJSON(value?: ListAgendaItemsResponse | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -81,7 +81,7 @@ export function UserResponseToJSON(value?: UserResponse | null): any {
         'count': value.count,
         'next': value.next,
         'previous': value.previous,
-        'results': value.results === undefined ? undefined : ((value.results as Array<any>).map(UserToJSON)),
+        'results': value.results === undefined ? undefined : ((value.results as Array<any>).map(AgendaItemToJSON)),
     };
 }
 

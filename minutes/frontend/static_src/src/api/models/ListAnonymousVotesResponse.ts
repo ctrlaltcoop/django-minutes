@@ -14,49 +14,49 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    Meeting,
-    MeetingFromJSON,
-    MeetingFromJSONTyped,
-    MeetingToJSON,
+    AnonymousVote,
+    AnonymousVoteFromJSON,
+    AnonymousVoteFromJSONTyped,
+    AnonymousVoteToJSON,
 } from './';
 
 /**
  * 
  * @export
- * @interface MeetingResponse
+ * @interface ListAnonymousVotesResponse
  */
-export interface MeetingResponse {
+export interface ListAnonymousVotesResponse {
     /**
      * 
      * @type {number}
-     * @memberof MeetingResponse
+     * @memberof ListAnonymousVotesResponse
      */
     count?: number;
     /**
      * 
      * @type {string}
-     * @memberof MeetingResponse
+     * @memberof ListAnonymousVotesResponse
      */
     next?: string | null;
     /**
      * 
      * @type {string}
-     * @memberof MeetingResponse
+     * @memberof ListAnonymousVotesResponse
      */
     previous?: string | null;
     /**
      * 
-     * @type {Array<Meeting>}
-     * @memberof MeetingResponse
+     * @type {Array<AnonymousVote>}
+     * @memberof ListAnonymousVotesResponse
      */
-    results?: Array<Meeting>;
+    results?: Array<AnonymousVote>;
 }
 
-export function MeetingResponseFromJSON(json: any): MeetingResponse {
-    return MeetingResponseFromJSONTyped(json, false);
+export function ListAnonymousVotesResponseFromJSON(json: any): ListAnonymousVotesResponse {
+    return ListAnonymousVotesResponseFromJSONTyped(json, false);
 }
 
-export function MeetingResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): MeetingResponse {
+export function ListAnonymousVotesResponseFromJSONTyped(json: any, ignoreDiscriminator: boolean): ListAnonymousVotesResponse {
     if ((json === undefined) || (json === null)) {
         return json;
     }
@@ -65,11 +65,11 @@ export function MeetingResponseFromJSONTyped(json: any, ignoreDiscriminator: boo
         'count': !exists(json, 'count') ? undefined : json['count'],
         'next': !exists(json, 'next') ? undefined : json['next'],
         'previous': !exists(json, 'previous') ? undefined : json['previous'],
-        'results': !exists(json, 'results') ? undefined : ((json['results'] as Array<any>).map(MeetingFromJSON)),
+        'results': !exists(json, 'results') ? undefined : ((json['results'] as Array<any>).map(AnonymousVoteFromJSON)),
     };
 }
 
-export function MeetingResponseToJSON(value?: MeetingResponse | null): any {
+export function ListAnonymousVotesResponseToJSON(value?: ListAnonymousVotesResponse | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -81,7 +81,7 @@ export function MeetingResponseToJSON(value?: MeetingResponse | null): any {
         'count': value.count,
         'next': value.next,
         'previous': value.previous,
-        'results': value.results === undefined ? undefined : ((value.results as Array<any>).map(MeetingToJSON)),
+        'results': value.results === undefined ? undefined : ((value.results as Array<any>).map(AnonymousVoteToJSON)),
     };
 }
 
