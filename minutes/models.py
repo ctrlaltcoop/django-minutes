@@ -92,8 +92,8 @@ class AgendaMeetingItem(models.Model, MeetingItemMixin, MentionMixin):
     description = models.TextField()
     mentions = models.ManyToManyField(User)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    def save(self, **kwargs):
+        super().save(**kwargs)
         self.update_mentions()
 
 
@@ -103,8 +103,8 @@ class AgendaSubItem(models.Model, AgendaSubItemMixin, MentionMixin):
     description = models.TextField()
     mentions = models.ManyToManyField(User)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    def save(self, **kwargs):
+        super().save(**kwargs)
         self.update_mentions()
 
 
