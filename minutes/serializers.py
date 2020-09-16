@@ -6,13 +6,15 @@ from minutes.models import Meeting, MeetingSeries, Decision, AgendaMeetingItem, 
     VoteChoice, AnonymousVote, RollCallVote
 
 
-class UserSerializer(ModelSerializer):
+class FullUserSerializer(ModelSerializer):
     password = serializers.CharField(
         write_only=True,
-        required=True,
+        required=False,
+        allow_null=True,
         help_text='Leave empty if no change needed',
         style={'input_type': 'password', 'placeholder': 'Password'}
     )
+    email = serializers.EmailField(required=True)
 
     def create(self, validated_data):
         user = super().create(validated_data)
@@ -32,6 +34,7 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+
 
 
 class MeetingSeriesSerializer(ModelSerializer):

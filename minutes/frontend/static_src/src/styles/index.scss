@@ -1,0 +1,10 @@
+// Library styles
+@import "~@blueprintjs/core/lib/css/blueprint.css";
+
+// use the bootstrap grid
+@import "~bootstrap/scss/bootstrap-grid";
+@import "~bootstrap/scss/utilities/sizing";
+
+// custom globals
+@import "common";
+@import "form";

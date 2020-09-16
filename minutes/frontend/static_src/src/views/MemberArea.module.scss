@@ -1,0 +1,11 @@
+@import "../styles/colors";
+
+.App {
+  text-align: center;
+}
+
+.BreadcrumbsContainer {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid $light-grey;
+  margin-bottom: 2rem;
+}

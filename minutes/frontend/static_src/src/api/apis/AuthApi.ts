@@ -21,9 +21,15 @@ import {
     PasswordChange,
     PasswordChangeFromJSON,
     PasswordChangeToJSON,
-    TokenSet,
-    TokenSetFromJSON,
-    TokenSetToJSON,
+    TokenClaim,
+    TokenClaimFromJSON,
+    TokenClaimToJSON,
+    TokenRefresh,
+    TokenRefreshFromJSON,
+    TokenRefreshToJSON,
+    TokenUserCredentials,
+    TokenUserCredentialsFromJSON,
+    TokenUserCredentialsToJSON,
 } from '../models';
 
 export interface CreateInvitationRequestRequest {
@@ -35,15 +41,15 @@ export interface CreatePasswordChangeRequest {
 }
 
 export interface CreateTokenSetByClaimRequest {
-    tokenSet?: TokenSet;
+    tokenClaim?: TokenClaim;
 }
 
 export interface CreateTokenSetByCredentialsRequest {
-    tokenSet?: TokenSet;
+    tokenUserCredentials?: TokenUserCredentials;
 }
 
 export interface CreateTokenSetByRefreshRequest {
-    tokenSet?: TokenSet;
+    tokenRefresh?: TokenRefresh;
 }
 
 /**
@@ -107,7 +113,7 @@ export class AuthApi extends runtime.BaseAPI {
 
     /**
      */
-    async createTokenSetByClaimRaw(requestParameters: CreateTokenSetByClaimRequest): Promise<runtime.ApiResponse<TokenSet>> {
+    async createTokenSetByClaimRaw(requestParameters: CreateTokenSetByClaimRequest): Promise<runtime.ApiResponse<TokenClaim>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -119,22 +125,22 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TokenSetToJSON(requestParameters.tokenSet),
+            body: TokenClaimToJSON(requestParameters.tokenClaim),
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TokenSetFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TokenClaimFromJSON(jsonValue));
     }
 
     /**
      */
-    async createTokenSetByClaim(requestParameters: CreateTokenSetByClaimRequest): Promise<TokenSet> {
+    async createTokenSetByClaim(requestParameters: CreateTokenSetByClaimRequest): Promise<TokenClaim> {
         const response = await this.createTokenSetByClaimRaw(requestParameters);
         return await response.value();
     }
 
     /**
      */
-    async createTokenSetByCredentialsRaw(requestParameters: CreateTokenSetByCredentialsRequest): Promise<runtime.ApiResponse<TokenSet>> {
+    async createTokenSetByCredentialsRaw(requestParameters: CreateTokenSetByCredentialsRequest): Promise<runtime.ApiResponse<TokenUserCredentials>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -146,22 +152,22 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TokenSetToJSON(requestParameters.tokenSet),
+            body: TokenUserCredentialsToJSON(requestParameters.tokenUserCredentials),
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TokenSetFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TokenUserCredentialsFromJSON(jsonValue));
     }
 
     /**
      */
-    async createTokenSetByCredentials(requestParameters: CreateTokenSetByCredentialsRequest): Promise<TokenSet> {
+    async createTokenSetByCredentials(requestParameters: CreateTokenSetByCredentialsRequest): Promise<TokenUserCredentials> {
         const response = await this.createTokenSetByCredentialsRaw(requestParameters);
         return await response.value();
     }
 
     /**
      */
-    async createTokenSetByRefreshRaw(requestParameters: CreateTokenSetByRefreshRequest): Promise<runtime.ApiResponse<TokenSet>> {
+    async createTokenSetByRefreshRaw(requestParameters: CreateTokenSetByRefreshRequest): Promise<runtime.ApiResponse<TokenRefresh>> {
         const queryParameters: runtime.HTTPQuery = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -173,15 +179,15 @@ export class AuthApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: TokenSetToJSON(requestParameters.tokenSet),
+            body: TokenRefreshToJSON(requestParameters.tokenRefresh),
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TokenSetFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => TokenRefreshFromJSON(jsonValue));
     }
 
     /**
      */
-    async createTokenSetByRefresh(requestParameters: CreateTokenSetByRefreshRequest): Promise<TokenSet> {
+    async createTokenSetByRefresh(requestParameters: CreateTokenSetByRefreshRequest): Promise<TokenRefresh> {
         const response = await this.createTokenSetByRefreshRaw(requestParameters);
         return await response.value();
     }

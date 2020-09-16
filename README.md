@@ -70,7 +70,7 @@ DJANGO_SETTINGS_MODULE=minutes_workbench.settings django-admin runserver
 You might to execute django database migrations which is possible via
 
 ```shell script
-DJANGO_SETTINGS_MODULE=minutes_workbench.settings django-admin runserver
+DJANGO_SETTINGS_MODULE=minutes_workbench.settings django-admin migrate
 ```
 
 ### Frontend / React

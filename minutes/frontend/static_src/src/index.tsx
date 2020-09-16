@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-// library styles
-import '@blueprintjs/core/lib/css/blueprint.css'
+// global styles
+import './styles/index.scss'
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  (
+    <App/>
+  ),
   document.getElementById('root')
 );
 
