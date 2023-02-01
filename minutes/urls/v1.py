@@ -14,7 +14,7 @@ from minutes.api import MeetingSeriesViewSet, UserViewSet, AgendaItemViewSet, Ag
 viewset_router = DefaultRouter()
 
 viewset_router.register('users', UserViewSet)
-viewset_router.register('meetingseries', MeetingSeriesViewSet)
+viewset_router.register('meetingseries', MeetingSeriesViewSet, basename='meetingseries')
 viewset_router.register('meeting', MeetingViewSet)
 viewset_router.register('agendaitem', AgendaItemViewSet, basename='agendaitem')
 viewset_router.register('agendasubitem', AgendaSubItemViewSet, basename='subitem')
@@ -48,6 +48,4 @@ urlpatterns = [
         template_name='minutes/redoc.html',
         extra_context={'schema_url': 'openapi-schema'}
     ), name='redoc'),
-
-    path('', include('minutes.frontend.urls'))
 ] + schema_patterns

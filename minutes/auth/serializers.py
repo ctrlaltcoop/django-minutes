@@ -103,7 +103,7 @@ class TokenClaimSerializer(TokenSetSerializer):  # pylint: disable=W0223
                 raise serializers.ValidationError('Claim token expired', code='expired_claim_token')
         except Token.DoesNotExist:
             raise serializers.ValidationError('Invalid claim token', code='invalid_claim_token')
-
         user_retrieved_token.send(sender=self.__class__, user=claim_token.user)
         attrs.update(create_new_token_set(claim_token.user))
+        claim_token.delete()
         return attrs

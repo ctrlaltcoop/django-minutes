@@ -7,7 +7,7 @@ from rest_framework.test import APIClient
 class UserTestCase(LiveServerTestCase):
     def setUp(self) -> None:
         self.client = APIClient()
-        self.admin = User.objects.create(username='admin', is_staff=True)
+        self.admin = User.objects.create(username='admin', is_superuser=True)
         self.admin_token = Token.objects.create(user=self.admin, token_type=TokenTypes.AUTH)
         self.user = User.objects.create(username='user')
         self.user_token = Token.objects.create(user=self.user, token_type=TokenTypes.AUTH)
@@ -20,7 +20,8 @@ class UserTestCase(LiveServerTestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_token.key)
         response = self.client.post('/api/v1/users/', {
             'username': 'testuser',
-            'password': 'testpassword'
+            'password': 'testpassword',
+            'email': 'test@example.com'
         })
         self.assertEqual(response.status_code, 403)
 
@@ -35,7 +36,8 @@ class UserTestCase(LiveServerTestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.admin_token.key)
         response = self.client.post('/api/v1/users/', {
             'username': 'testuser',
-            'password': 'testpassword'
+            'password': 'testpassword',
+            'email': 'test@example.com'
         })
         self.assertEqual(response.status_code, 201)
 
@@ -57,9 +59,12 @@ class UserTestCase(LiveServerTestCase):
         })
         self.assertEqual(response.status_code, 200)
 
+    '''
+    Should not be able via the general UserViewSet, need extra profile viewsets for this
+    '''
     def test_200_for_nonadmin_changing_own_user(self):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.user_token.key)
         response = self.client.patch('/api/v1/users/{0}/'.format(self.user.id), {
             'password': 'newpass'
         })
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403)

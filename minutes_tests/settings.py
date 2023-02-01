@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'minutes',
     'minutes.auth',
-    'minutes.frontend',
 ]
 
 MIDDLEWARE = [

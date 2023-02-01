@@ -40,7 +40,7 @@ class TokenAuthenticationTest(LiveServerTestCase):
         # second time will fail
         self.client.credentials(HTTP_AUTHORIZATION='Token {0}'.format(response.json()['auth_token_key']))
         response = self.client.get(
-            '/api/v1/users/{0}/'.format(self.user.id)
+            '/api/v1/meeting/'
         )
         self.assertEqual(response.status_code, 200)
 

@@ -24,8 +24,9 @@ class MeetingScenario:
         self.meeting = Meeting.objects.create(
             name="Test Meeting",
             date=timezone.now(),
-            series=self.test_meeting_series
+            series=self.test_meeting_series,
         )
+        self.meeting.owners.add(self.owner)
 
         self.another_meeting = Meeting.objects.create(
             name="Another Meeting",

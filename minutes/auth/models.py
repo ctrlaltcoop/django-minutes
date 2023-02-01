@@ -50,5 +50,5 @@ class Invitation(models.Model):
         self.invited_user.email_user(_('You were invited to collaborate on meeting minutes'), invite_mail)
 
 
-user_retrieved_token = Signal(providing_args=['user'])
+user_retrieved_token = Signal()
 user_retrieved_token.connect(update_last_login)

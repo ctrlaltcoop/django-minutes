@@ -6,7 +6,7 @@ from minutes.models import VoteChoice
 
 class VoteChoiceScenario:
     def __init__(self):
-        self.admin = User.objects.create(is_staff=True, username='admin')
+        self.admin = User.objects.create(is_superuser=True, username='admin')
         self.admin_token = Token.objects.create(user=self.admin, token_type=TokenTypes.AUTH)
 
         self.user = User.objects.create(username='user')

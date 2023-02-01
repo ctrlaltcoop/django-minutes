@@ -11,7 +11,7 @@ from minutes.filters import AgendaItemFilterSet, AgendaSubItemFilterSet, Decisio
     AnonymousVoteFilterSet
 from minutes.models import MeetingSeries, AgendaMeetingItem, Decision, Meeting, Participant, \
     AgendaSubItem, MinutesUser, VoteChoice, RollCallVote, AnonymousVote
-from minutes.permissions import ParticipantReadOnly, MeetingOwnerReadWrite, Read, Create, \
+from minutes.permissions import Modify, OwnUser, ParticipantReadOnly, MeetingOwnerReadWrite, Read, Create, \
     RelatedMeetingOwned, RelatedAgendaItemOwned, RelatedMeetingSeriesOwned, ReadOwnUser, IsAdminUser
 
 from minutes.serializers import MeetingSeriesSerializer, MeetingSerializer, DecisionSerializer, \
@@ -58,20 +58,20 @@ class MeetingSeriesViewSet(viewsets.ModelViewSet):
 class MeetingViewSet(viewsets.ModelViewSet):
     schema = AutoSchema(tags=['minutes'])
     permission_classes = [
-        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite | (RelatedMeetingSeriesOwned & Create))
+        IsAdminUser |
+        (IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite | (RelatedMeetingSeriesOwned & Create)))
     ]
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
 
     filter_backends = [DjangoFilterBackend]
-    filterset_class = DecisionFilterSet
 
     def get_queryset(self):
         if self.request.user.is_superuser:
-            return MeetingSeries.objects.all()
+            return Meeting.objects.all()
         else:
             user = MinutesUser.from_user(self.request.user)
-            user.my_meetings()
+            return user.my_meetings()
 
     def perform_create(self, serializer):
         instance = serializer.save()
