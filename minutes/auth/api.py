@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 
 from rest_framework import status
-from rest_framework.authtoken.serializers import AuthTokenSerializer as UserCredentialsSerializer
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -9,28 +8,11 @@ from rest_framework.schemas.openapi import AutoSchema
 from rest_framework.status import HTTP_201_CREATED
 from rest_framework.viewsets import GenericViewSet
 
-from minutes.auth.models import Token, TokenTypes, Invitation
-from minutes.auth.serializers import TokenRefreshSerializer, TokenSetSerializer, ClaimSerializer
+from minutes.auth.models import Invitation
+from minutes.auth.serializers import TokenRefreshSerializer, \
+    TokenUserCredentialsSerializer, TokenClaimSerializer
 from minutes.auth.serializers import PasswordChangeSerializer
-from minutes.serializers import InvitationRequestSerializer, UserSerializer
-
-
-def create_new_token_set(user) -> dict:
-    auth_token = Token.objects.create(
-        user=user,
-        token_type=TokenTypes.AUTH
-    )
-    refresh_token = Token.objects.create(
-        user=user,
-        token_type=TokenTypes.REFRESH
-    )
-    token_set = {
-        'auth_token_key': auth_token.key,
-        'auth_token_expires': auth_token.expires,
-        'refresh_token_key': refresh_token.key,
-        'refresh_token_expires': refresh_token.expires,
-    }
-    return token_set
+from minutes.serializers import InvitationRequestSerializer, FullUserSerializer
 
 
 class PasswordChangeViewSet(GenericViewSet):
@@ -49,49 +31,25 @@ class PasswordChangeViewSet(GenericViewSet):
 
 
 class TokenViewSet(GenericViewSet):
-    serializer_class = TokenSetSerializer
+    def create(self, request):
+        serializer: TokenUserCredentialsSerializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class TokenUserCredentialsViewSet(TokenViewSet):
     schema = AutoSchema(operation_id_base="TokenSetByCredentials", tags=['auth'])
-
-    def create(self, request):
-        serializer: UserCredentialsSerializer = UserCredentialsSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        token_set_serializer = self.get_serializer(
-            data=create_new_token_set(serializer.validated_data['user'])
-        )
-        token_set_serializer.is_valid()
-        return Response(token_set_serializer.validated_data, status=status.HTTP_201_CREATED)
+    serializer_class = TokenUserCredentialsSerializer
 
 
-class TokenRefreshViewSet(GenericViewSet):
+class TokenRefreshViewSet(TokenViewSet):
     schema = AutoSchema(operation_id_base="TokenSetByRefresh", tags=['auth'])
-    serializer_class = TokenSetSerializer
-
-    def create(self, request):
-        serializer: TokenRefreshSerializer = TokenRefreshSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = Token.objects.get(key=serializer.validated_data['refresh_token']).user
-        token_set_serializer = self.get_serializer(
-            data=create_new_token_set(user)
-        )
-        token_set_serializer.is_valid()
-        return Response(token_set_serializer.validated_data, status=status.HTTP_201_CREATED)
+    serializer_class = TokenRefreshSerializer
 
 
-class TokenClaimViewSet(GenericViewSet):
-    serializer_class = TokenSetSerializer
+class TokenClaimViewSet(TokenViewSet):
+    serializer_class = TokenClaimSerializer
     schema = AutoSchema(operation_id_base="TokenSetByClaim", tags=['auth'])
-
-    def create(self, request):
-        serializer: ClaimSerializer = ClaimSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        token = Token.objects.get(key=serializer.validated_data['claim_token'])
-        user = token.user
-        token.delete()
-        token_set_serializer = self.get_serializer(
-            data=create_new_token_set(user)
-        )
-        token_set_serializer.is_valid()
-        return Response(token_set_serializer.validated_data, status=status.HTTP_201_CREATED)
 
 
 class InvitationViewSet(GenericViewSet):
@@ -114,5 +72,5 @@ class InvitationViewSet(GenericViewSet):
             invited_user=new_user,
             inviting_user=request.user,
         )
-        user_serializer = UserSerializer(instance=new_user)
+        user_serializer = FullUserSerializer(instance=new_user)
         return Response(user_serializer.data, status=HTTP_201_CREATED)

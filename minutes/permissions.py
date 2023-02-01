@@ -94,7 +94,7 @@ class OwnUser(BasePermission):
         return obj == request.user
 
 
-class IsAdminUser(IsAdminUserBase):
+class IsAdminUser(BasePermission):
     """
     A custom IsAdminUser class which also checks being admin user on object permissions
     With the base class returning always True for has_object_permission it'll cause trouble
@@ -102,6 +102,9 @@ class IsAdminUser(IsAdminUserBase):
     """
     def has_object_permission(self, request, view, obj):
         return self.has_permission(request, view)
+
+    def has_permission(self, request, view):
+        return bool(request.user and request.user.is_superuser)
 
 
 MeetingOwner = (IsSeriesOwnedByUser | IsOwnedByUser)
@@ -112,4 +115,4 @@ MeetingOwnerReadWrite = (MeetingOwner & Modify) |\
 
 ParticipantReadOnly = (IsParticipant & Read)
 
-ReadWriteOwnUser = ((OwnUser & Read) | (OwnUser & Modify)) & ~Create
+ReadOwnUser = OwnUser & Read

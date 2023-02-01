@@ -18,6 +18,10 @@ class MinutesUser(User):
         return self.meetings_owned.all() | \
                Meeting.objects.filter(participants__user_id=self.id)
 
+    def my_meeting_series(self):
+        return self.meetingseries_owned.all() | \
+                MeetingSeries.objects.filter(participants__user_id=self.id)
+
 
 class MeetingItemMixin:
     meeting: 'Meeting'

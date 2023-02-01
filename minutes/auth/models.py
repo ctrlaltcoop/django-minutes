@@ -1,8 +1,9 @@
 from django.apps import apps
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, update_last_login
 from django.db import models
 from django.db.models import IntegerField, ForeignKey, IntegerChoices, CASCADE
+from django.dispatch import Signal
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -47,3 +48,7 @@ class Invitation(models.Model):
             'invitation_url': 'tbd'  # TODO: Fill once FE urls can be resolved
         })
         self.invited_user.email_user(_('You were invited to collaborate on meeting minutes'), invite_mail)
+
+
+user_retrieved_token = Signal(providing_args=['user'])
+user_retrieved_token.connect(update_last_login)

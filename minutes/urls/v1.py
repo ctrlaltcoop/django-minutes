@@ -6,7 +6,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.schemas import get_schema_view
 
 from minutes.auth.apps import MinutesAuthConfig
-from minutes.auth.api import PasswordChangeViewSet, TokenViewSet, TokenRefreshViewSet, TokenClaimViewSet, \
+from minutes.auth.api import PasswordChangeViewSet, TokenUserCredentialsViewSet, TokenRefreshViewSet, TokenClaimViewSet, \
     InvitationViewSet
 from minutes.api import MeetingSeriesViewSet, UserViewSet, AgendaItemViewSet, AgendaSubItemViewSet, DecisionViewSet, \
     MeetingViewSet, VoteChoiceViewSet, AnonymousVoteViewSet, RollCallVoteViewSet
@@ -26,7 +26,7 @@ viewset_router.register('votechoice', VoteChoiceViewSet, basename='votechoice')
 if MinutesAuthConfig.name in settings.INSTALLED_APPS:
     viewset_router.register('invitation', InvitationViewSet, basename='invitation')
     viewset_router.register('changepassword', PasswordChangeViewSet, basename='passwordchange')
-    viewset_router.register('token', TokenViewSet, basename='token')
+    viewset_router.register('token', TokenUserCredentialsViewSet, basename='token')
     viewset_router.register('token-refresh', TokenRefreshViewSet, basename='tokenrefresh')
     viewset_router.register('token-claim', TokenClaimViewSet, basename='tokenclaim')
 
