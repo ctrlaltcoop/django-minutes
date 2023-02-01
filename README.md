@@ -1,6 +1,6 @@
 
 ![tests](https://github.com/l0rn/django-minutes/workflows/tests/badge.svg)
-[![codecov](https://codecov.io/gh/l0rn/django-minutes/branch/master/graph/badge.svg)](https://codecov.io/gh/l0rn/django-minutes)
+[![codecov](https://codecov.io/gh/l0rn/django-minutes/branch/main/graph/badge.svg)](https://codecov.io/gh/l0rn/django-minutes)
 
 # django-minutes
 
@@ -19,7 +19,6 @@ As of now it is in initial development phase. Planned features for initial relea
 * Filtering and notifications on mentions
 * Export of meetings in plain text or simple print layout
 
-
 ⚠Before releasing 1.0.0 this project might introduce destructive / incompatible database migrations, so beware of running in production before⚠️
 
 ## Developing
@@ -31,7 +30,7 @@ frontend which is a react application. This section is therefore split in two pa
 
 #### Development environment
 
-Development is currently done with Python `3.8`. A list of supported python versions is TBD. 
+Development is currently done with Python `3.10`. A list of supported python versions is TBD.
 
 #### Environment / Dependencies
 
@@ -70,15 +69,5 @@ DJANGO_SETTINGS_MODULE=minutes_workbench.settings django-admin runserver
 You might to execute django database migrations which is possible via
 
 ```shell script
-DJANGO_SETTINGS_MODULE=minutes_workbench.settings django-admin runserver
+DJANGO_SETTINGS_MODULE=minutes_workbench.settings django-admin migrate
 ```
-
-### Frontend / React
-
-For easy configuration and deployment the frontend is embedded in this django app. It is a react app with it's own
-toolchain (`create-react-app`). For development instructions visit [the README of the subproject](minutes/frontend/static_src/README.md)
-
-When executing the build script of the frontend application it copies the `index.html` of the app to the templates folder of `minutes.frontend`.
-All static resources are copied to the respective `static` folder. A simple [TemplateView](minutes/frontend/views.py) serves it.
-
-

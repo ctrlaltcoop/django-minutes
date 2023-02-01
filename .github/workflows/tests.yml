@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.6', '3.7', '3.8']
+        python-version: ['3.8', '3.9', '3.10', '3.11']
     steps:
     - uses: actions/checkout@master
     - name: Setup Python
@@ -27,26 +27,3 @@ jobs:
       run: |
         pip install tox tox-gh-actions
         tox
-  test-js:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - name: Setup Node
-      uses: actions/setup-node@v1
-      with:
-        node-version: '12.x'
-    - name: Cache node_modules
-      uses: actions/cache@v1
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-    - name: Javascript dependencies
-      run: |
-        cd minutes/frontend/static_src
-        npm i
-    - name: Run npm run test
-      run: |
-        cd minutes/frontend/static_src
-        npm run test

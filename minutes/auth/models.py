@@ -10,7 +10,7 @@ from rest_framework.authtoken.models import Token as BaseToken
 
 from minutes.apps import MinutesConfig
 
-app_conf = apps.get_app_config('minutes.auth')
+app_conf = apps.get_app_config('minutes_auth')
 
 
 class TokenTypes(IntegerChoices):

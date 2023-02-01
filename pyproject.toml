@@ -9,22 +9,25 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.6"
-django = "^3.0.0"
+python = "^3.10"
+django = "^4.1.0"
 # Using unreleased AutoSchema(operation_id_base="") feature, as well as component schemas for responses - replace with stable once released
-djangorestframework = {git = "https://github.com/l0rn/django-rest-framework.git", branch="component_schemas_for_responses"}
-django-ordered-model = "^3.3.0"
-pyyaml = "^5.3.1"
-uritemplate = "^3.0.1"
-django-filter = "^2.2.0"
+djangorestframework = "^3.14.0"
+django-ordered-model = "^3.6.0"
+pyyaml = "^6.0.0"
+uritemplate = "^4.1.1"
+django-filter = "^22.1"
 
 [tool.poetry.dev-dependencies]
-pytest-django = "^3.9.0"
-ipdb = "^0.13.2"
-tox = "^3.14.6"
-pylint = "^2.4.4"
-coverage = "^5.1"
+pytest-django = "^4.5.2"
+ipdb = "^0.13.11"
+tox = "^4.4.4"
+pylint = "^2.16.0"
+coverage = "^7.1.0"
+
+[tool.poetry.group.dev.dependencies]
+autopep8 = "^2.0.1"
 
 [build-system]
-requires = ["poetry>=0.12, <1"]
+requires = ["poetry>=1"]
 build-backend = "poetry.masonry.api"

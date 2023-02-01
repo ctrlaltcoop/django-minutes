@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'minutes',
     'minutes.auth',
-    'minutes.frontend'
 ]
 
 MIDDLEWARE = [
@@ -130,3 +129,5 @@ REST_FRAMEWORK = {
         'minutes.auth.authentication.TokenAuthentication',
     ]
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
