@@ -11,8 +11,8 @@ from minutes.filters import AgendaItemFilterSet, AgendaSubItemFilterSet, Decisio
     AnonymousVoteFilterSet
 from minutes.models import MeetingSeries, AgendaMeetingItem, Decision, Meeting, Participant, \
     AgendaSubItem, MinutesUser, VoteChoice, RollCallVote, AnonymousVote
-from minutes.permissions import Modify, OwnUser, ParticipantReadOnly, MeetingOwnerReadWrite, Read, Create, \
-    RelatedMeetingOwned, RelatedAgendaItemOwned, RelatedMeetingSeriesOwned, ReadOwnUser, IsAdminUser
+from minutes.permissions import ParticipantReadOnly, MeetingOwnerReadWrite, Read, Create, \
+    RelatedMeetingOwned, RelatedAgendaItemOwned, RelatedMeetingSeriesOwned, IsAdminUser
 
 from minutes.serializers import MeetingSeriesSerializer, MeetingSerializer, DecisionSerializer, \
     SubItemSerializer, AgendaItemSerializer, ParticipantSerializer, VoteChoiceSerializer, RollCallVoteSerializer, \
@@ -30,7 +30,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         if kwargs['pk'] == 'me':
             return Response(self.serializer_class(instance=request.user).data, HTTP_200_OK)
-        return super(UserViewSet, self).retrieve(request, *args, **kwargs)
+        return super().retrieve(request, *args, **kwargs)
 
 
 class ParticipantViewSet(viewsets.ModelViewSet):
@@ -50,16 +50,16 @@ class MeetingSeriesViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return MeetingSeries.objects.all()
-        else:
-            user = MinutesUser.from_user(self.request.user)
-            user.my_meeting_series()
+        user = MinutesUser.from_user(self.request.user)
+        return user.my_meeting_series()
 
 
 class MeetingViewSet(viewsets.ModelViewSet):
     schema = AutoSchema(tags=['minutes'])
     permission_classes = [
         IsAdminUser |
-        (IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite | (RelatedMeetingSeriesOwned & Create)))
+        (IsAuthenticated & (ParticipantReadOnly |
+         MeetingOwnerReadWrite | (RelatedMeetingSeriesOwned & Create)))
     ]
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
@@ -69,9 +69,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_superuser:
             return Meeting.objects.all()
-        else:
-            user = MinutesUser.from_user(self.request.user)
-            return user.my_meetings()
+        user = MinutesUser.from_user(self.request.user)
+        return user.my_meetings()
 
     def perform_create(self, serializer):
         instance = serializer.save()
@@ -97,7 +96,8 @@ class DecisionViewSet(viewsets.ModelViewSet):
 class AgendaItemViewSet(viewsets.ModelViewSet):
     schema = AutoSchema(tags=['minutes'])
     permission_classes = [
-        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite | (Create & RelatedMeetingOwned))
+        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite | (
+            Create & RelatedMeetingOwned))
     ]
 
     serializer_class = AgendaItemSerializer
@@ -114,7 +114,8 @@ class AgendaItemViewSet(viewsets.ModelViewSet):
 class AgendaSubItemViewSet(viewsets.ModelViewSet):
     schema = AutoSchema(tags=['minutes'])
     permission_classes = [
-        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite | (Create & RelatedAgendaItemOwned))
+        IsAuthenticated & (ParticipantReadOnly | MeetingOwnerReadWrite | (
+            Create & RelatedAgendaItemOwned))
     ]
     serializer_class = SubItemSerializer
     filter_backends = [DjangoFilterBackend]

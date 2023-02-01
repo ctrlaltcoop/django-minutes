@@ -1,6 +1,4 @@
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User
-from django.dispatch import Signal
 from django.utils import timezone
 from django.utils.translation import gettext as _
 from rest_framework import serializers
@@ -38,7 +36,7 @@ class TokenSetSerializer(Serializer):  # pylint: disable=W0223
     refresh_token_key = serializers.CharField(read_only=True)
     refresh_token_expires = serializers.DateTimeField(read_only=True)
 
-
+# pylint: disable-next=W0223
 class TokenUserCredentialsSerializer(TokenSetSerializer):
     username = serializers.CharField(
         label=_("Username"),
@@ -84,8 +82,8 @@ class TokenRefreshSerializer(TokenSetSerializer):  # pylint: disable=W0223
             if refresh_token.expires < timezone.now():
                 raise serializers.ValidationError('Refresh token expired', code='expired_refresh_token')
 
-        except Token.DoesNotExist:
-            raise serializers.ValidationError('Invalid refresh token', code='invalid_refresh_token')
+        except Token.DoesNotExist as exc:
+            raise serializers.ValidationError('Invalid refresh token', code='invalid_refresh_token') from exc
 
         user_retrieved_token.send(sender=self.__class__, user=refresh_token.user)
         attrs.update(create_new_token_set(refresh_token.user))
@@ -101,8 +99,8 @@ class TokenClaimSerializer(TokenSetSerializer):  # pylint: disable=W0223
             claim_token = Token.objects.get(token_type=TokenTypes.CLAIM, key=claim_token_key)
             if claim_token.expires < timezone.now():
                 raise serializers.ValidationError('Claim token expired', code='expired_claim_token')
-        except Token.DoesNotExist:
-            raise serializers.ValidationError('Invalid claim token', code='invalid_claim_token')
+        except Token.DoesNotExist as exc:
+            raise serializers.ValidationError('Invalid claim token', code='invalid_claim_token') from exc
         user_retrieved_token.send(sender=self.__class__, user=claim_token.user)
         attrs.update(create_new_token_set(claim_token.user))
         claim_token.delete()

@@ -39,9 +39,9 @@ class TokenAuthentication(BaseAuthentication):
 
         try:
             token = auth[1].decode()
-        except UnicodeError:
+        except UnicodeError as exc:
             msg = _('Invalid token header. Token string should not contain invalid characters.')
-            raise exceptions.AuthenticationFailed(msg)
+            raise exceptions.AuthenticationFailed(msg) from exc
 
         return self.authenticate_credentials(token)
 
@@ -49,8 +49,8 @@ class TokenAuthentication(BaseAuthentication):
     def authenticate_credentials(key):
         try:
             token = Token.objects.select_related('user').get(key=key, token_type=TokenTypes.AUTH)
-        except Token.DoesNotExist:
-            raise exceptions.AuthenticationFailed(_('Invalid token.'))
+        except Token.DoesNotExist as exc:
+            raise exceptions.AuthenticationFailed(_('Invalid token.')) from exc
         if token.expires < timezone.now():
             raise exceptions.AuthenticationFailed(_('Token expired'))
         if not token.user.is_active:
