@@ -10,7 +10,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-django = "^4.1.0"
+django = "^4.1.9"
 # Using unreleased AutoSchema(operation_id_base="") feature, as well as component schemas for responses - replace with stable once released
 djangorestframework = "^3.14.0"
 django-ordered-model = "^3.6.0"
